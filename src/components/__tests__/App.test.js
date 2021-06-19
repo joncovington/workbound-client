@@ -36,5 +36,4 @@ it('shows the header', () => {
       container
     );
 
-    expect(container.innerHTML).toContain('<div class="ui menu"><a class="item" href="/">Workbound</a>')
 });
