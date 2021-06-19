@@ -72,13 +72,15 @@ class SignInForm extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="ui grid" style={{ height: '100vh' }}>
+            <div className="ui column centered middle" style={{ maxWidth: 450 }}>
                 {this.onError()}
                 <form onSubmit={this.props.handleSubmit(this.onSubmit)} className="ui form error">
                     <Field name="email" component={this.renderInput} ph="Enter Email" label="Email"/>
                     <Field name="password" component={this.renderInput}ph="Enter Password" label="Password" type='password' />
                     <button className="ui button primary">Submit</button>
                 </form>
+            </div>
             </div>
         );
     }
