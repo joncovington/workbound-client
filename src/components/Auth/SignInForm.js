@@ -3,7 +3,7 @@ import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import { signIn } from '../../actions'
+import { signIn } from 'actions'
 
 class SignInForm extends React.Component {
 

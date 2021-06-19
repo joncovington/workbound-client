@@ -1,4 +1,4 @@
-import workboundApi from "../api/workboundApi";
+import workboundApi from "api/workboundApi";
 import { 
     SIGN_IN,
     SIGN_IN_FAILURE,

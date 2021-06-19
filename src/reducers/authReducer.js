@@ -3,7 +3,7 @@ import {
     SIGN_OUT,
     SIGN_IN_SUCCESS,
     SIGN_IN_FAILURE
-} from "../actions/types";
+} from "actions/types";
 
 const INITIAL_STATE = {
     isSignedIn: null,

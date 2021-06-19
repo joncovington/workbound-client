@@ -1,13 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import reduxThunk from 'redux-thunk';
 
-import reducers from '../../reducers';
-
-import App from '../App';
-import Header from '../Header/Header';
+import App from 'components/App';
+import Header from 'components/Header/Header';
 
 
 it('shows the header', () => {
