@@ -1,39 +1,20 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import App from '../App';
+import { shallow } from 'enzyme';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import reduxThunk from 'redux-thunk';
 
 import reducers from '../../reducers';
 
+import App from '../App';
+import Header from '../Header/Header';
 
-const store = createStore(
-  reducers,
-  applyMiddleware(reduxThunk)
-);
-
-let container = null;
-beforeEach(() => {
-  // setup a DOM element as a render target
-  container = document.createElement("div");
-  document.body.appendChild(container);
-});
-
-afterEach(() => {
-  // cleanup on exiting
-  ReactDOM.unmountComponentAtNode(container);
-  container.remove();
-  container = null;
-});
 
 it('shows the header', () => {
 
-    ReactDOM.render(
-      <Provider store={store}>
-        <App />
-      </Provider>,
-      container
+    const wrapped = shallow(
+      <App />
     );
-
+    
+    expect(wrapped.find(Header).length).toEqual(1)
 });
