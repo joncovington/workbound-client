@@ -3,7 +3,7 @@ import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import { signIn } from 'actions'
+import { signIn } from 'actions';
 
 class SignInForm extends React.Component {
 
@@ -38,7 +38,7 @@ class SignInForm extends React.Component {
     };
 
     onSubmit = (formValues) => {
-        this.props.signIn(formValues, this.props.history);
+        this.props.signIn(formValues, this.props.history);       
     };
 
     errorListItems() {
@@ -107,8 +107,10 @@ const mapStateToProps = state => {
     }
 }
 
-
-export default connect(mapStateToProps, { signIn })(reduxForm({
+export default connect(
+    mapStateToProps,
+    { signIn }
+    )(reduxForm({
     form: 'signInForm',
     validate
 })(withRouter(SignInForm)));

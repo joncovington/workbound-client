@@ -14,6 +14,7 @@ specifiers:
   react-scripts: 4.0.3
   redux: ^4.1.0
   redux-form: ^8.3.7
+  redux-mock-store: ^1.5.4
   redux-thunk: ^2.3.0
   web-vitals: ^1.0.1
 
@@ -31,6 +32,7 @@ dependencies:
   react-scripts: 4.0.3_react@17.0.2
   redux: 4.1.0
   redux-form: 8.3.7_5527f171b90f9b4118f62c8991bf7d26
+  redux-mock-store: 1.5.4
   redux-thunk: 2.3.0
   web-vitals: 1.1.2
 
@@ -7559,6 +7561,10 @@ packages:
     resolution: {integrity: sha1-QVxEePK8wwEgwizhDtMib30+GOA=}
     dev: false
 
+  /lodash.isplainobject/4.0.6:
+    resolution: {integrity: sha1-fFJqUtibRcRcxpC4gWO+BJf1UMs=}
+    dev: false
+
   /lodash.memoize/4.1.2:
     resolution: {integrity: sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4=}
     dev: false
@@ -9916,6 +9922,12 @@ packages:
       react-is: 16.13.1
       react-redux: 7.2.4_react-dom@17.0.2+react@17.0.2
       redux: 4.1.0
+    dev: false
+
+  /redux-mock-store/1.5.4:
+    resolution: {integrity: sha512-xmcA0O/tjCLXhh9Fuiq6pMrJCwFRaouA8436zcikdIpYWWCjU76CRk+i2bHx8EeiSiMGnB85/lZdU3wIJVXHTA==}
+    dependencies:
+      lodash.isplainobject: 4.0.6
     dev: false
 
   /redux-thunk/2.3.0:

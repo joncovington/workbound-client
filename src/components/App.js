@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, Route, BrowserRouter } from 'react-router-dom';
-import Header from 'components/Header/Header';
+import Header from 'components/Header';
 import SignInForm from 'components/Auth/SignInForm';
 
 class App extends React.Component {
