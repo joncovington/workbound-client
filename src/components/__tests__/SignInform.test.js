@@ -1,29 +1,15 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import reduxThunk from 'redux-thunk';
 import { mount } from 'enzyme';
-
+import Root from 'Root';
 import SignInForm from 'components/Auth/SignInForm';
-
-import reducers from 'reducers';
-
-const store = createStore(
-    reducers,
-    applyMiddleware(reduxThunk)
-);
 
 let wrapped;
 
 beforeEach(() => {
     wrapped = mount(
-    <Provider store={store}>
-        <BrowserRouter>
+        <Root>
             <SignInForm />
-        </BrowserRouter>
-    </Provider>
-
+        </Root>    
     );
 });
 
@@ -37,7 +23,7 @@ it('has two inputs and a button', () => {
     expect(wrapped.find('button').length).toEqual(1)
 })
 
-it('updates store on user typing in inputs', () => {
+it('allows user typing in inputs', () => {
     var email = 'fake@email.com'
     var password = 'fakepassword'
 
@@ -49,9 +35,25 @@ it('updates store on user typing in inputs', () => {
         target: { value: password }
     });
 
-    expect(store.getState().form.signInForm.values['email'])
+    expect(wrapped.find('input').at(0).props().value)
     .toEqual(email)
 
-    expect(store.getState().form.signInForm.values['password'])
+    expect(wrapped.find('input').at(1).props().value)
     .toEqual(password)
+});
+
+it('can click submit', () => {
+    var email = 'fake@email.com'
+    var password = 'fakepassword'
+
+    wrapped.find('input').at(0).simulate('change', {
+        target: { value: email }
+    });
+
+    wrapped.find('input').at(1).simulate('change', {
+        target: { value: password }
+    });
+
+    wrapped.find('form').simulate('submit')
+
 });
