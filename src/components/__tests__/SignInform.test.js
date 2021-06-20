@@ -35,14 +35,13 @@ it('allows user typing in inputs', () => {
         target: { value: password }
     });
 
-    expect(wrapped.find('input').at(0).props().value)
-    .toEqual(email)
+    const stateFormData = wrapped.children().props().store.getState().form.signInForm.values
 
-    expect(wrapped.find('input').at(1).props().value)
-    .toEqual(password)
+    expect(stateFormData['email']).toEqual(email)
+    expect(stateFormData['password']).toEqual(password)
 });
 
-it('can click submit', () => {
+it('can submit', () => {
     var email = 'fake@email.com'
     var password = 'fakepassword'
 
@@ -53,5 +52,11 @@ it('can click submit', () => {
     wrapped.find('input').at(1).simulate('change', {
         target: { value: password }
     });
+    
+    wrapped.find('form').simulate('submit');
+    
+    const signInForm = wrapped.children().props().store.getState().form.signInForm
+
+    expect(signInForm.submitSucceeded).toEqual(true)
 
 });
