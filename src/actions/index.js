@@ -19,6 +19,7 @@ export const signIn = (formValues, history) => async dispatch => {
         }
     })
     .catch(error => {
+        console.log(error.response)
         dispatch({
             type: SIGN_IN_FAILURE,
             payload: error.response

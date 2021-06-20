@@ -6,7 +6,7 @@ import {
 } from "actions/types";
 
 const INITIAL_STATE = {
-    isSignedIn: null,
+    isSignedIn: false,
     error: null,
     token: null
 };
@@ -18,7 +18,7 @@ const INITIAL_STATE = {
         case SIGN_IN_SUCCESS:
             return { ...state, ...action.payload, isSignedIn: true }
         case SIGN_IN_FAILURE:
-            return { ...state, error: action.payload }
+            return { ...state, error: action.payload, isSignedIn: false }
         case SIGN_OUT:
             return { ...state, isSignedIn: false, token: null }
         default:

@@ -54,6 +54,4 @@ it('can click submit', () => {
         target: { value: password }
     });
 
-    wrapped.find('form').simulate('submit')
-
 });
