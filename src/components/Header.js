@@ -1,46 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { signOut } from 'actions';
 import { withRouter } from 'react-router-dom';
+import { signOut } from 'features/auth/authSlice';
+import { useSelector, useDispatch } from 'react-redux';
 
-class Header extends React.Component {
+function Header(props) {
+    const [buttonColor, setButtonColor] = useState('primary')
+    const isSignedIn = useSelector(state => state.auth.isSignedIn)
+    const dispatch = useDispatch()
     
-    authButton() {
-        if (!this.props.isSignedIn) {
-            return ( 
-                <Link to="/signin" className="ui primary button">Sign In</Link>
-            );
+    function handleClick() {
+        if (!isSignedIn){
+            props.history.push('/signin')
         } else {
-            return ( 
-                <button 
-                    onClick={() => this.props.signOut(this.props.history)} 
-                    className="ui gray button"
-                >
-                    Sign Out
-                </button>
-            );
+            dispatch(signOut())
+            props.history.push('/')
         }
     }
+    
+    useEffect(() => {
+        isSignedIn ? setButtonColor('gray') : setButtonColor('primary')
+    }, [isSignedIn, setButtonColor])
 
-    render() {
-        return (
-            <div className="ui menu">
-                <Link to="/" className="item">
-                    Workbound
-                </Link>
-                <div className="right menu">
-                    <div className="item">
-                        {this.authButton()}
-                    </div>
+    return (
+        <div className="ui menu">
+            <Link to="/" className="item">
+                Workbound
+            </Link>
+            <div className="right menu">
+                <div className="item">
+                    <button 
+                        onClick={handleClick} 
+                        className={`ui button ${buttonColor}`}
+                    >
+                        { isSignedIn ? 'Sign Out' : 'Sign In'}
+                    </button>
                 </div>
             </div>
-        );
-    };
-}
+        </div>
+    );
+};
 
-const mapStateToProps = state => {
-    return { isSignedIn: state.auth.isSignedIn}
-}
-
-export default connect(mapStateToProps, { signOut })(withRouter(Header));
+export default withRouter(Header);
