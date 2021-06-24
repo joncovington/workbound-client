@@ -46,7 +46,6 @@ export const authSlice = createSlice({
             state.status = 'idle'
             state.error = null
             state.user = {}
-            localStorage.removeItem('access_token')
             localStorage.removeItem('refresh_token')
             delete workboundApi.defaults.headers['Authorization']
         }
@@ -55,19 +54,16 @@ export const authSlice = createSlice({
         [fetchToken.pending]: (state) => {
             state.status = 'loading'
             state.error = null
-            localStorage.removeItem('access_token');
         },
         [fetchToken.fulfilled]: (state, action) => {
             state.status = 'succeeded'
             state.isSignedIn = true
-            localStorage.setItem('access_token', action.payload.access)
             localStorage.setItem('refresh_token', action.payload.refresh)
             workboundApi.defaults.headers['Authorization'] = 'JWT '+ action.payload.access
         },
         [fetchToken.rejected]: (state, action) => {
             state.status = 'failed'
             state.error = action.payload
-            localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
         },
         [loginOnLoad.pending]: (state) => {
