@@ -11,10 +11,10 @@ function Header(props) {
     
     function handleClick() {
         if (!isSignedIn){
-            props.history.push('/signin')
+            props.signInOpen(true)
         } else {
             dispatch(signOut())
-            props.history.push('/')
+            props.signInOpen(false)
         }
     }
     

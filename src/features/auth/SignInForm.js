@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchToken } from 'features/auth/authSlice';
 
-import { Button, Form, Message } from 'semantic-ui-react';
+import { Button, Form, Message, Modal, TransitionablePortal } from 'semantic-ui-react';
 import { useForm } from 'hooks'
 import { validate } from 'validation'
 
@@ -37,9 +37,9 @@ function SignInForm(props) {
     // redirect to root after successful sign in
     useEffect(() => {
         if (isSignedIn === true) {
-            props.history.push('/')
+            props.setOpen(false)
         }
-    }, [isSignedIn, props.history])
+    }, [isSignedIn, props])
 
     // Only allow submit if input values are defined and no errors exist
     useEffect(() => {
@@ -80,7 +80,7 @@ function SignInForm(props) {
             <Message error floating>
                 <Message.Header>There were some errors with your submission</Message.Header>
                 <Message.List>
-                    <Message.Item>{authError.error.detail}</Message.Item>
+                    <Message.Item>{authError.detail}</Message.Item>
                 </Message.List>
             </Message>
             )
@@ -89,8 +89,16 @@ function SignInForm(props) {
     }
 
     return (
-        <div className="ui grid" style={{ height: '100vh' }}>
-        <div className="ui column centered middle" style={{ maxWidth: 767 }}>
+        <TransitionablePortal
+            transition={{animation:'fade up', duration: 500}}
+            open={props.open}
+        >
+        <Modal
+            onClose={() => props.setOpen(false)}
+            onOpen={() => props.setOpen(true)}
+            open={true}
+            dimmer='blurring'
+      >
             {showError ? renderAuthError() : null}
             <Message attached>
                 <Message.Header>Sign In</Message.Header>
@@ -142,8 +150,8 @@ function SignInForm(props) {
                     loading={ isSubmitting ? true : false}
                 >Sign In</Button>
             </Form>
-        </div>
-        </div>
+        </Modal>
+        </TransitionablePortal>
     );
 }
 
