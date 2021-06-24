@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getToken, getProfile } from 'features/auth/authSlice';
+import { fetchToken } from 'features/auth/authSlice';
 
 import { Button, Form, Message } from 'semantic-ui-react';
 import { useForm } from 'hooks'
@@ -59,7 +59,7 @@ function SignInForm(props) {
 
     // callback given to useForm handlechange
     function submit() {
-        dispatch(getToken({
+        dispatch(fetchToken({
         email: inputs.email.value,
         password: inputs.password.value
         }));

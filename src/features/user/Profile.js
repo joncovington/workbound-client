@@ -10,8 +10,11 @@ function Profile(props) {
     const isSignedIn = useSelector(state => state.auth.isSignedIn)
     
     useEffect(() => {
-        dispatch(fetchProfile())
-    }, [isSignedIn])
+        if(isSignedIn){
+            dispatch(fetchProfile())
+        }
+        
+    }, [isSignedIn, dispatch])
 
     return (
         <Transition visible={isSignedIn} animation='drop' duration={500}>
