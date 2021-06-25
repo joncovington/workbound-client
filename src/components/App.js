@@ -27,7 +27,7 @@ function App() {
         <div className="ui container">
             <BrowserRouter>
                 <Header signInOpen={setSignInModalOpen}/>
-                <Profile />
+                {isSignedIn ? <Profile /> : null}
                 <SignInForm open={signInModalOpen} setOpen={setSignInModalOpen}/>
                 <Switch>
                     <Route path="/" exact >

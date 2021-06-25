@@ -13,11 +13,10 @@ function Profile(props) {
         if(isSignedIn){
             dispatch(fetchProfile())
         }
-        
     }, [isSignedIn, dispatch])
 
     return (
-        <Transition visible={isSignedIn} animation='drop' duration={500}>
+        <Transition visible={isSignedIn} animation='fade in' duration={500}>
             <Segment>
                 {user.email}
             </Segment>

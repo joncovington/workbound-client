@@ -36,6 +36,7 @@ export const useForm = (callback, validate) => {
     }
 
     return {
+        setInputs,
         handleInputChange,
         handleBlur,
         handleSubmit,

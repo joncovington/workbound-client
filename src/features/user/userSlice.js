@@ -22,6 +22,13 @@ export const userSlice = createSlice({
         id: null,
         email: ''
     },
+    reducers: {
+        clearProfile(state) {
+            state.status = 'idle'
+            state.id = null
+            state.email = ''
+        }
+    },
     extraReducers: {
         [fetchProfile.pending]: (state) => {
             state.status = 'loading'
@@ -41,6 +48,8 @@ export const userSlice = createSlice({
       }
 });
 
-const { reducer } = userSlice
+const { actions, reducer } = userSlice
+
+export const { clearProfile } = actions
 
 export default reducer;

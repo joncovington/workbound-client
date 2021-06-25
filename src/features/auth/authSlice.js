@@ -76,6 +76,7 @@ export const authSlice = createSlice({
         },
         [loginOnLoad.rejected]: (state, action) => {
             state.status = 'failed'
+            state.isSignedIn = false
             console.log(action.payload)
         },
         

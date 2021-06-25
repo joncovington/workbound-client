@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchToken } from 'features/auth/authSlice';
 
@@ -13,6 +12,7 @@ function SignInForm(props) {
     
     // initialize custom useForm hook
     const { inputs,
+            setInputs,
             handleInputChange,
             handleSubmit,
             handleBlur,
@@ -39,6 +39,7 @@ function SignInForm(props) {
         if (isSignedIn === true) {
             props.setOpen(false)
         }
+        
     }, [isSignedIn, props])
 
     // Only allow submit if input values are defined and no errors exist
@@ -59,10 +60,14 @@ function SignInForm(props) {
 
     // callback given to useForm handlechange
     function submit() {
+        const emailVal = inputs.email.value
+        const passwordVal = inputs.password.value
+        setInputs({ email: {touched: false, value: ''}, password: {touched: false, value: ''}})
         dispatch(fetchToken({
-        email: inputs.email.value,
-        password: inputs.password.value
+        email: emailVal,
+        password: passwordVal
         }));
+         
     }
 
     // configure error attribute for Semantic UI
@@ -118,7 +123,7 @@ function SignInForm(props) {
                     onChange={handleInputChange}
                     onBlur={handleBlur}
                     error={
-                        errors.email
+                        errors.email && errors.email.touched
                         ? errorConfig(errors.email, 'below')
                         : null
                     }
@@ -155,4 +160,4 @@ function SignInForm(props) {
     );
 }
 
-export default withRouter(SignInForm);
+export default SignInForm;
