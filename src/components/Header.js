@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { withRouter } from 'react-router-dom';
-import { signOut } from 'features/auth/authSlice';
 import { useSelector, useDispatch } from 'react-redux';
+import { clearProfile } from 'features/user/userSlice';
+import { signOut } from 'features/auth/authSlice';
 
 function Header(props) {
     const [buttonColor, setButtonColor] = useState('primary')
@@ -13,6 +13,7 @@ function Header(props) {
         if (!isSignedIn){
             props.signInOpen(true)
         } else {
+            dispatch(clearProfile())
             dispatch(signOut())
             props.signInOpen(false)
         }
@@ -41,4 +42,4 @@ function Header(props) {
     );
 };
 
-export default withRouter(Header);
+export default Header;
