@@ -5,7 +5,6 @@ import { loginOnLoad } from 'features/auth/authSlice';
 import Header from 'components/Header';
 import SignInForm from 'features/auth/SignInForm';
 import Profile from 'features/user/Profile';
-
 import 'semantic-ui-css/semantic.min.css'
 
 
@@ -27,11 +26,11 @@ function App() {
         <div className="ui container">
             <BrowserRouter>
                 <Header signInOpen={setSignInModalOpen}/>
-                {isSignedIn ? <Profile /> : null}
                 <SignInForm open={signInModalOpen} setOpen={setSignInModalOpen}/>
                 <Switch>
                     <Route path="/" exact >
                     </Route>
+                    <Route path="/profile" exact children={<Profile />}/>
                 </Switch>
             </BrowserRouter>
         </div>

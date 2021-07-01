@@ -1,44 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect }  from 'react';
+import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { clearProfile } from 'features/user/userSlice';
-import { signOut } from 'features/auth/authSlice';
+import { Button, Menu } from 'semantic-ui-react';
+import { fetchProfile } from 'features/user/userSlice';
+
+import UserMenu from 'features/user/UserMenu';
+
+import 'components/Header.styles.css'
 
 function Header(props) {
-    const [buttonColor, setButtonColor] = useState('primary')
-    const isSignedIn = useSelector(state => state.auth.isSignedIn)
-    const dispatch = useDispatch()
-    
-    function handleClick() {
-        if (!isSignedIn){
-            props.signInOpen(true)
-        } else {
-            dispatch(clearProfile())
-            dispatch(signOut())
-            props.signInOpen(false)
-        }
-    }
-    
+    const isSignedIn = useSelector(state => state.auth.isSignedIn);
+
+    const dispatch = useDispatch();
     useEffect(() => {
-        isSignedIn ? setButtonColor('gray') : setButtonColor('primary')
-    }, [isSignedIn, setButtonColor])
+        if(isSignedIn){
+            dispatch(fetchProfile())
+        }
+    }, [isSignedIn, dispatch]);
 
     return (
-        <div className="ui menu">
-            <Link to="/" className="item">
+        <Menu>
+            <Menu.Item as={NavLink} to='/' className='brand'>
                 Workbound
-            </Link>
-            <div className="right menu">
-                <div className="item">
-                    <button 
-                        onClick={handleClick} 
-                        className={`ui button ${buttonColor}`}
-                    >
-                        { isSignedIn ? 'Sign Out' : 'Sign In'}
-                    </button>
-                </div>
-            </div>
-        </div>
+            </Menu.Item>
+            <Menu.Menu position='right'>
+                {
+                    isSignedIn
+                    ? <UserMenu signInOpen={props.signInOpen}/> 
+                    : <Menu.Item header>
+                        <Button onClick={() => props.signInOpen(true)} color='blue'>Sign In</Button>
+                      </Menu.Item>
+                }
+            </Menu.Menu>
+        </Menu>
     );
 };
 

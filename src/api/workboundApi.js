@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const baseURL = 'http://localhost:8000/api/v1/'
 
-const apiConnection =axios.create({
+const apiConnection = axios.create({
     baseURL: baseURL,
     headers: {
         'Authorization': localStorage.getItem('access_token') 
