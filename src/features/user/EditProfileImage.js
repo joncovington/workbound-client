@@ -35,7 +35,7 @@ const EditProfileModal = (props) => {
             closeIcon
             size='tiny'
             open={true} 
-            // dimmer='blurring'
+            dimmer='blurring'
             onClose={() => setOpen(false)}
             onOpen={() => setOpen(true)}
         >

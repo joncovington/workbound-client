@@ -32,3 +32,30 @@ export const validate = (inputs) => {
 
     return errors;
 }
+
+export const validateProfile = (inputs) => {
+    const errors = {}
+    var pattern = new RegExp(/^[A-Za-z]+$/)
+    if(inputs.firstName !== undefined) {
+        
+        if(!pattern.test(inputs["firstName"].value)) {
+            errors["firstName"] = "Please use only alpha characters"
+        } else {
+            delete errors['firstName']
+        }
+    }
+
+    if(inputs.lastName !== undefined) {
+
+        if(!pattern.test(inputs["lastName"].value)) {
+            errors["lastName"] = "Please use only alpha characters"
+        } else {
+            delete errors['lastName']
+        }
+    }
+
+
+
+
+    return errors
+}

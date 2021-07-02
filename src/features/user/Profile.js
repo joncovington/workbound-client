@@ -5,27 +5,21 @@ import { Segment,
          Header,
          Grid,
          Image,
-         Menu,
          Button,
          Divider,
          TransitionablePortal,
          Placeholder,
          Message } from 'semantic-ui-react';
 
-import EditProfileModal from './EditProfileImage';
+import EditProfileModal from 'features/user/EditProfileImage';
+import ProfileDetail from 'features/user/ProfileDetail'
 
 function Profile(props) {
     const user = useSelector(state => state.user);
     const isSignedIn = useSelector(state => state.auth.isSignedIn);
-    const [activeItem, setActiveItem] = useState({activeItem: ''});
     const [open, setOpen] = useState(false);
     const [successVisible, setSuccessVisible] = useState(false);
     const [profileVisible, setProfileVisible] = useState(false)
-
-    const activeItemClick = (e, {name}) => {
-        console.log(name + ' clicked')
-        setActiveItem(name)
-    };
 
     useEffect(() => {
         if (isSignedIn) {
@@ -46,16 +40,16 @@ function Profile(props) {
                         positive
                         onDismiss={() => setSuccessVisible(false)}
                         header='Success'
-                        content='Profile image updated.'
+                        content='Profile updated.'
                    />
                  : null}
                 <Segment attached>
                     <Grid celled='internally'>
                     <Grid.Row>
-                        <Grid.Column width={3} textAlign='center'>
+                        <Grid.Column width={6} textAlign='center'>
                             {
                                 user.profile.image 
-                                ? <Image size='medium' src={user.profile.image} />
+                                ? <Image fluid src={user.profile.image} />
                                 :   <Fragment>
                                         <Placeholder fluid>
                                             <small>Profile image not available.</small>
@@ -71,16 +65,7 @@ function Profile(props) {
                             }} size='tiny'>Edit Image</Button>  
                         </Grid.Column>
                         <Grid.Column width={10}>
-                            Profile Details Go Here
-                        </Grid.Column>
-                        <Grid.Column width={3}>
-                            <Menu fluid secondary vertical>
-                                <Menu.Item
-                                    name='account'
-                                    active={activeItem === 'account'}
-                                    onClick={activeItemClick}
-                                />
-                            </Menu>
+                            <ProfileDetail setSuccessVisible={setSuccessVisible} user={user}/>
                         </Grid.Column>
                         </Grid.Row>
                     </Grid>
