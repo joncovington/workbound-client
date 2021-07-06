@@ -43,7 +43,13 @@ export const validateProfile = (inputs) => {
         } else {
             delete errors['firstName']
         }
+
+        if (inputs.firstName.value === '' || inputs.firstName.value === null) {
+            delete errors['firstName']
+        }
     }
+    
+   
 
     if(inputs.lastName !== undefined) {
 
@@ -52,8 +58,13 @@ export const validateProfile = (inputs) => {
         } else {
             delete errors['lastName']
         }
+
+        if (inputs.lastName.value === '' || inputs.lastName.value === null) {
+            delete errors['lastName']
+        }
     }
 
+    
 
 
 

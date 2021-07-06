@@ -35,6 +35,20 @@ export const updateProfile = createAsyncThunk(
         }   
 });
 
+export const fetchPermissions = createAsyncThunk(
+    'user/fetchPermissions', 
+    async (arg, { rejectWithValue }) => {
+        try {
+            const response = await workboundApi.get('user/perms/')
+            return response.data
+        } catch (err) {
+            if (!err.response) {
+                throw err
+            }
+            return rejectWithValue(err.response.data) 
+        }   
+});
+
 export const userSlice = createSlice({
     name: 'user',
     initialState: {
@@ -42,7 +56,8 @@ export const userSlice = createSlice({
         id: null,
         email: '',
         profile: {},
-        error: null
+        error: null,
+        permissions: {}
     },
     reducers: {
         clearProfile(state) {
@@ -51,6 +66,7 @@ export const userSlice = createSlice({
             state.email = ''
             state.profile = {}
             state.error = null
+            state.permissions = {}
         }
     },
     extraReducers: {
@@ -89,7 +105,23 @@ export const userSlice = createSlice({
             state.email = ''
             state.profile = {}
             state.error = action.payload
-        }
+        },
+        [fetchPermissions.pending]: (state) => {
+            state.status = 'loading'
+        },
+        [fetchPermissions.fulfilled]: (state, action) => {
+            state.status = 'succeeded'
+            action.payload.forEach((perm) => {
+                Object.keys(perm).forEach(key => {
+                    state.permissions[key] = perm[key]
+                })
+            })
+        },
+        [fetchPermissions.rejected]: (state, action) => {
+            state.status = 'failed'
+            console.log('fetch perm failed')
+            state.error = action.payload
+        },
         
       }
 });

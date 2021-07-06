@@ -34,7 +34,7 @@ const UserMenu = (props) => {
             <Dropdown.Header>
                 Admin
             </Dropdown.Header>
-            <Dropdown.Item icon='tasks' as={Link} to='/' content='Tasks' />
+            <Dropdown.Item icon='tasks' as={Link} to='/tasks' content='Tasks' />
             <Dropdown.Divider />
             <Dropdown.Item>
                 <Button onClick={signOutClick}>Sign Out</Button>

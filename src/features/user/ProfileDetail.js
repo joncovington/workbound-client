@@ -36,7 +36,7 @@ const ProfileDetail = (props) => {
             bodyFormData.append('first_name', inputs.firstName.value)
         }
         if (inputs.lastName.touched && inputs.lastName.value !== last_name) {
-            bodyFormData.append('first_name', inputs.lastName.value)
+            bodyFormData.append('last_name', inputs.lastName.value)
         }
         if (inputs.phone.touched && inputs.phone.value !== phone) {
             bodyFormData.append('phone', inputs.phone.value)
@@ -57,45 +57,45 @@ const ProfileDetail = (props) => {
         // Set initial 
         if(firstName || lastName) {
             setInputs(inputs => ({ ...inputs, firstName: {touched: false, value: firstName}, lastName: {touched: false, value: lastName} }))
-        }
+        } else {
+            setInputs(inputs => ({ ...inputs, firstName: {touched: false, value: ''}, lastName: {touched: false, value: ''} }))
+         }
         if(initialPhoneValue !== null && initialPhoneValue !== undefined) {
             setPhoneValue(initialPhoneValue)
+        } else {
+            setInputs(inputs => ({ ...inputs, phone: {touched: false, value: ''} }))
         }
         setAllowSubmit(false)
     }, [firstName, lastName, initialPhoneValue, setPhoneValue, setInputs])
 
     useEffect(() => {
-
-    })
-
-    useEffect(() => {
         if (phoneValue !== undefined && phoneValue !== null) {
-            if (!isValidPhoneNumber(phoneValue)) {
+            if (!isValidPhoneNumber(phoneValue) && phoneValue) {
                 setPhoneError(true)
+                setInputs(inputs => ({ ...inputs, phone: {touched: true, value: phoneValue} }))
             } else {
                 setPhoneError(false)
-                setInputs(inputs => ({ ...inputs, phone: {touched: false, value: phoneValue} }))
+                setInputs(inputs => ({ ...inputs, phone: {touched: true, value: phoneValue} }))
             }
-        }
-        if (initialPhoneValue !== phoneValue) {
-            setInputs(inputs => ({ ...inputs, phone: {touched: true, value: phoneValue} }))
         }
     }, [initialPhoneValue, phoneValue, setPhoneError, setInputs])
 
     useEffect(() => {
-        if(Object.values(inputs).length > 0){
-            if(
-                (inputs.firstName.touched
-                || inputs.lastName.touched
-                || inputs.phone.touched)
-                && Object.keys(errors).length === 0
-            ) {
-                setAllowSubmit(true)
-            } else {
-                setAllowSubmit(false)
-            }
+        const anyTouched = []
+        Object.values(inputs).forEach(value => {
+            anyTouched.push(value['touched'])
+        })
+
+        if (
+            anyTouched.some(element => { return element === true})
+            && Object.keys(errors).length === 0
+            && !phoneError
+            && inputs.phone.value !== initialPhoneValue) {
+            setAllowSubmit(true)
+        } else {
+            setAllowSubmit(false)
         }
-    }, [inputs, errors])
+    }, [inputs, errors, phoneError, initialPhoneValue])
 
     return (
         <Container fluid>
@@ -138,33 +138,37 @@ const ProfileDetail = (props) => {
                 </Form.Group>
                     <Grid>
                         <Grid.Column width={16} stretched>
-                            <Segment basic>
-                                <Form.Field error={phoneError}>
-                                    <PhoneInput
-                                        name='phone'
-                                        defaultCountry="US"
-                                        placeholder='Enter Phone Number'
-                                        value={phoneValue}
-                                        onChange={setPhoneValue}
-                                        onBlur={handleBlur}
-                                    />
-                                    {phoneError
-                                        ? <Label prompt pointing>
-                                        Please enter a valid phone number
-                                        </Label>
-                                        : null}
-                                </Form.Field>
-                            </Segment>
+                            <Form.Field error={phoneError}>
+                            <label>Phone Number</label>
+                                <PhoneInput
+                                    name='phone'
+                                    defaultCountry="US"
+                                    placeholder='Enter Phone Number'
+                                    value={phoneValue}
+                                    onChange={setPhoneValue}
+                                    onBlur={handleBlur}
+                                />
+                                {phoneError
+                                    ? <Label prompt pointing>
+                                    Please enter a valid phone number
+                                    </Label>
+                                    : null}
+                            </Form.Field>
                         </Grid.Column>
                     </Grid>
-                <Form.Button
-                    onClick={handleSubmit}
-                    loading={ isSubmitting ? true : false}
-                    size='tiny'
-                    disabled={!allowSubmit}
-                    floated='right'
-                    content='Update Profile'
-                />
+                <Segment basic>
+                    <Form.Field>
+                        <Form.Button
+                            onClick={handleSubmit}
+                            loading={ isSubmitting ? true : false}
+                            size='tiny'
+                            disabled={!allowSubmit}
+                            floated='right'
+                            content='Update Profile'
+                        />
+                    </Form.Field>
+                </Segment>
+                
             </Form>
         </Container>
     )
