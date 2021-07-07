@@ -6,8 +6,8 @@ import { Grid,
          TransitionablePortal,
          Placeholder } from 'semantic-ui-react';
 
-import EditProfileModal from 'features/user/EditProfileImage';
-import ProfileDetail from 'features/user/ProfileDetail'
+import EditProfileModal from './EditProfileImage';
+import ProfileDetail from './ProfileDetail'
 
 const ProfilePane = (props) => {
     const user = props.user;

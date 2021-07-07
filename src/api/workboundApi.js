@@ -13,6 +13,15 @@ const apiConnection = axios.create({
     }
 });
 
+// apiConnection.interceptors.request.use(function (config) {
+//     // Do something before request is sent
+//     console.log(config)
+//     return config;
+//   }, function (error) {
+//     // Do something with request error
+//     return Promise.reject(error);
+//   });
+
 apiConnection.interceptors.response.use(
 	(response) => {
 		return response;
@@ -33,7 +42,6 @@ apiConnection.interceptors.response.use(
 			error.response.status === 401 &&
 			originalRequest.url === baseURL + 'user/token/refresh/'
 		) {
-			window.location.href = '/signin';
 			return Promise.reject(error);
 		}
 
@@ -44,18 +52,17 @@ apiConnection.interceptors.response.use(
 		) {
 			const refreshToken = localStorage.getItem('refresh_token');
 
-			if (refreshToken) {
+			if (refreshToken !== undefined || refreshToken !== null) {
 				const tokenParts = JSON.parse(atob(refreshToken.split('.')[1]));
 
 				// refresh expiry date in token is expressed in seconds, while now() returns milliseconds:
 				const now = Math.ceil(Date.now() / 1000);
-				// console.log(tokenParts.exp);
+				console.log(tokenParts.exp);
 
 				if (tokenParts.exp > now) {
 					return apiConnection
 						.post('user/token/refresh/', { refresh: refreshToken })
 						.then((response) => {
-							localStorage.setItem('access_token', response.data.access);
 							localStorage.setItem('refresh_token', response.data.refresh);
 
 							apiConnection.defaults.headers['Authorization'] =
@@ -70,11 +77,9 @@ apiConnection.interceptors.response.use(
 						});
 				} else {
 					console.log('Refresh token is expired', tokenParts.exp, now);
-					// window.location.href = '/signin';
 				}
 			} else {
 				console.log('Refresh token not available.');
-				window.location.href = '/signin';
 			}
 		}
 

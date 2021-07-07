@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchToken } from 'features/auth/authSlice';
+import { fetchToken } from './authSlice';
 
 import { Button, Form, Message, Modal, TransitionablePortal } from 'semantic-ui-react';
-import { useForm } from 'hooks'
-import { validate } from 'validation'
+import { useForm } from '../../hooks'
+import { validate } from '../../validation'
 
 function SignInForm(props) {
     const isSignedIn = useSelector(state => state.auth.isSignedIn);

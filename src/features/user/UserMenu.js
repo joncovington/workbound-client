@@ -2,7 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { signOut } from 'features/auth/authSlice'
+import { signOut } from '../auth/authSlice'
 import { clearProfile } from './userSlice'
 import { Dropdown, Button, Image, Icon } from 'semantic-ui-react'
 
@@ -17,7 +17,6 @@ const UserMenu = (props) => {
     function signOutClick() {
         dispatch(clearProfile())
         dispatch(signOut())
-        props.history.push('/')
     }
     
     const trigger = (

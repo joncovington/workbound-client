@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Switch, Route, BrowserRouter } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginOnLoad } from 'features/auth/authSlice';
-import Header from 'components/Header';
-import SignInForm from 'features/auth/SignInForm';
-import Profile from 'features/user/Profile';
+import { loginOnLoad } from '../features/auth/authSlice';
+import Header from './Header';
+import SignInForm from '../features/auth/SignInForm';
+import Profile from '../features/user/Profile';
+import TaskList from '../features/task/TaskList';
+
 import 'semantic-ui-css/semantic.min.css'
 
+export const history = createBrowserHistory()
 
 function App() {
     const dispatch = useDispatch()
@@ -17,7 +21,7 @@ function App() {
     useEffect(() => {
         if (token && !isSignedIn) {
             dispatch(loginOnLoad(token))
-        }
+        }        
     }, [dispatch, token, isSignedIn])
 
     const [signInModalOpen, setSignInModalOpen] = useState(false);
@@ -30,7 +34,11 @@ function App() {
                 <Switch>
                     <Route path="/" exact >
                     </Route>
-                    <Route path="/profile" exact children={<Profile />}/>
+                    <Route path='/signin' render={() => {
+                        setSignInModalOpen(true)
+                    }}/>
+                    <Route path="/profile" exact component={Profile}/>
+                    <Route path="/tasks" exact component={TaskList}/>
                 </Switch>
             </BrowserRouter>
         </div>

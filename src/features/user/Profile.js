@@ -1,8 +1,8 @@
 import React, { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Tab, Segment, Header, Message } from 'semantic-ui-react';
-import ProfilePane from 'features/user/ProfilePane';
-import PermissionList from 'features/user/PermissionList';
+import ProfilePane from './ProfilePane';
+import PermissionList from './PermissionList';
 
 function Profile(props) {
     const user = useSelector(state => state.user);

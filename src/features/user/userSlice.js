@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import workboundApi from 'api/workboundApi';
+import workboundApi from '../../api/workboundApi';
 
 const media_root = 'http://localhost:8000'
 

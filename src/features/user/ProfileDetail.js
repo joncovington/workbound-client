@@ -6,8 +6,8 @@ import 'react-phone-number-input/style.css'
 
 import { updateProfile } from './userSlice';
 
-import { useForm } from 'hooks';
-import { validateProfile } from 'validation';
+import { useForm } from '../../hooks';
+import { validateProfile } from '../../validation';
 
 
 const ProfileDetail = (props) => {

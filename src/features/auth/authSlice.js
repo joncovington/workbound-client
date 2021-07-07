@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import workboundApi from 'api/workboundApi';
+import workboundApi from '../../api/workboundApi';
 
 export const fetchToken = createAsyncThunk(
     'auth/fetchToken', 
@@ -46,8 +46,8 @@ export const authSlice = createSlice({
             state.status = 'idle'
             state.error = null
             state.user = {}
-            localStorage.removeItem('refresh_token')
             delete workboundApi.defaults.headers['Authorization']
+            localStorage.clear()
         }
     },
     extraReducers: {
@@ -64,7 +64,6 @@ export const authSlice = createSlice({
         [fetchToken.rejected]: (state, action) => {
             state.status = 'failed'
             state.error = action.payload
-            localStorage.removeItem('refresh_token');
         },
         [loginOnLoad.pending]: (state) => {
             state.status = 'loading'
@@ -77,7 +76,7 @@ export const authSlice = createSlice({
         [loginOnLoad.rejected]: (state, action) => {
             state.status = 'failed'
             state.isSignedIn = false
-            console.log(action.payload)
+            state.error = action.payload
         },
         
       }
