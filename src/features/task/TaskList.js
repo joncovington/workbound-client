@@ -1,21 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
 import { useFetchTasksQuery } from '../../api/apiSlice';
 import { Accordion,
          Segment,
          Dimmer,
          Loader,
-         Pagination,
-         Message,
-         Grid } from 'semantic-ui-react';
-
+         Message } from 'semantic-ui-react';
 
 const TaskList = (props) => {
-    const {setTaskCount, pageSize, titleSearch} = props;
-    const isSignedIn = useSelector(state => state.auth.isSignedIn);
-    const user = useSelector(state => state.user)
-    const taskPermissions = user.permissions.task
-    const [page, setPage] = useState(1);
+    const {setTaskCount, setError, pageSize, titleSearch, page} = props;
     const { data,
             isFetching,
             isLoading,
@@ -24,12 +16,7 @@ const TaskList = (props) => {
             error } = useFetchTasksQuery({page: page,
                                             pageSize: pageSize, 
                                             titleSearch: titleSearch},
-                                            {skip: !isSignedIn || !taskPermissions.view_task.status});
-    
-
-    const handlePaginationChange = (e, { activePage }) => {
-        setPage(activePage)
-    };
+                                            );
     
     useEffect(() => {
         if (isSuccess){
@@ -37,29 +24,21 @@ const TaskList = (props) => {
         }
     }, [data, isSuccess, setTaskCount])
 
-    if (isSignedIn && !taskPermissions.view_task.status) {
-        return (
-            <Segment basic>
-                <Message negative>
-                    <Message.Header>No View Permission Found for Tasks.</Message.Header>
-                    <Message.Content>Please contact administrator to obtain the correct permissions.</Message.Content>
-                </Message>
-            </Segment>
-        )
-    }
-
     var results = []
-    if (isError || !isSignedIn) {
-        return (
-            <Segment basic>
-                {isError
-                    ? <Message negative>{error.data.detail}</Message>
-                    : null
-                }
-                {!isSignedIn ? 'Your login has expired. Please sign in.' : null}
-            </Segment>
-        )
+
+    useEffect(() => {
+        if (isError) {
+            setError({
+                header: '',
+                content: error.data.detail
+            })
+        }
+    }, [isError, error, setError])
+
+    if (isError) {
+        return null
     }
+    
     if (isFetching || isLoading) {
         return (
             <Segment basic>
@@ -91,23 +70,13 @@ const TaskList = (props) => {
         return (
             results.length > 0 ?
             <Segment basic>
-                <Grid>
-                    <Grid.Row>
-                        <Grid.Column width={16} textAlign='center'>
-                            <Pagination
-                                size='mini'
-                                activePage={page}
-                                totalPages={Math.ceil(data.count / pageSize)}
-                                onPageChange={handlePaginationChange}
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
                 <Accordion fluid styled panels={panels} />
             </Segment>
             : <Message warning>There are 0 tasks.</Message>
         )
     }
+
+    return null
     
 }
 

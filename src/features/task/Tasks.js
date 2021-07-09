@@ -1,18 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Segment,
          Label,
          Header,
          Icon,
          Dropdown,
          Grid,
-         Input } from 'semantic-ui-react';
+         Input,
+         Pagination,
+         Message } from 'semantic-ui-react';
 import TaskList from './TaskList';
 
 
 const Tasks = (props) => {
+    const isSignedIn = useSelector(state => state.auth.isSignedIn);
+    const permissionsFetched = useSelector(state => state.user.isPermFetched)
+    const user = useSelector(state => state.user)
+    const viewTaskPermission = user.permissions.task.view_task.status
+
     const [pageSize, setPageSize] = useState(10)
+    const [page, setPage] = useState(1);
     const [titleSearch, setTitleSearch] = useState('')
     const [taskCount, setTaskCount] = useState(0)
+    const [displayError, setDisplayError] = useState(false)
+    const [displayList, setDisplayList] = useState(false)
+    const [error, setError] = useState({header: '', content: ''})
 
     const handlePageSizeChange = (e, { value }) => {
         setPageSize(value)
@@ -22,12 +34,40 @@ const Tasks = (props) => {
         setTitleSearch(value)
     }
 
+    const handlePaginationChange = (e, { activePage }) => {
+        setPage(activePage)
+    };
+
     const options = [
         { key: 5, text: '5', value: 5 },
         { key: 10, text: '10', value: 10 },
         { key: 20, text: '20', value: 20 },
         { key: 50, text: '50', value: 50 },
-      ]
+    ]
+    
+    useEffect(() => {
+        if(!isSignedIn) {
+            setDisplayError(true)
+            setDisplayList(false)
+            setTaskCount(0)
+            setError({
+                header: 'You have been signed out.',
+                content: 'Please sign in again to access Tasks.'
+            })
+        }
+        if (isSignedIn && permissionsFetched && viewTaskPermission) {
+            setDisplayList(true)
+            setDisplayError(false)
+        }
+        if (isSignedIn && permissionsFetched && !viewTaskPermission) {
+            setDisplayError(true)
+            setError({
+                header: 'No Permissions To View Tasks',
+                content: 'Please contact administrator to upgrade your permissions.'
+            })
+        }
+    }, [isSignedIn, viewTaskPermission, permissionsFetched])
+
 
     return (
         <Segment>
@@ -61,8 +101,45 @@ const Tasks = (props) => {
                                 value={pageSize}/> Per Page
                         </Grid.Column>
                     </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column width={4} />
+                        <Grid.Column textAlign='center' width={8}>
+                            {taskCount > 0 && displayList === true
+                             ? <Pagination
+                                size='mini'
+                                activePage={page}
+                                totalPages={Math.ceil(taskCount / pageSize)}
+                                onPageChange={handlePaginationChange}
+                                firstItem={{ content: <Icon name='angle double left' />, icon: true }}
+                                lastItem={{ content: <Icon name='angle double right' />, icon: true }}
+                                prevItem={{ content: <Icon name='angle left' />, icon: true }}
+                                nextItem={{ content: <Icon name='angle right' />, icon: true }}
+                                />
+                             : null
+                            }
+                        </Grid.Column>
+                        <Grid.Column width={4} />
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column>
+                        <Message negative hidden={!displayError}>
+                            <Message.Header>{error.header}</Message.Header>
+                            <Message.Content>{error.content}</Message.Content>
+                        </Message>
+                        </Grid.Column>
+                    </Grid.Row>
                 </Grid>
-                <TaskList setTaskCount={setTaskCount} pageSize={pageSize} titleSearch={titleSearch}/>
+                {displayList
+                 ? <TaskList
+                    page={page}
+                    setTaskCount={setTaskCount}
+                    setError={setError}
+                    pageSize={pageSize} 
+                    titleSearch={titleSearch}
+                  />
+                 : null
+                }
+                
         </Segment>
     )
 }

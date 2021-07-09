@@ -10,7 +10,7 @@ const PermissionList = (props) => {
         if(Object.keys(permissions[perm]).length > 0) {
             var items = []
             Object.keys(permissions[perm]).forEach(key => {
-                if (permissions[perm][key].status === true){
+                if (permissions[perm][key].status === true && perm !== 'status'){
                     items.push(permissions[perm][key].verbose)
                 }
             })

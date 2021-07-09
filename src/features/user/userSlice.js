@@ -55,6 +55,7 @@ const INITIAL_STATE = {
     email: '',
     profile: {},
     error: null,
+    isPermFetched: false,
     permissions: {
         task: {
             add_task: {
@@ -204,6 +205,7 @@ export const userSlice = createSlice({
         },
         [fetchPermissions.fulfilled]: (state, action) => {
             state.status = 'succeeded'
+            state.isPermFetched = true
             action.payload.forEach((perm) => {
                 Object.keys(perm).forEach(key => {
                     if (Object.keys(perm[key]).length > 0) {
