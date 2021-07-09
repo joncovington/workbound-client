@@ -6,7 +6,7 @@ import { loginOnLoad } from '../features/auth/authSlice';
 import Header from './Header';
 import SignInForm from '../features/auth/SignInForm';
 import Profile from '../features/user/Profile';
-import TaskList from '../features/task/TaskList';
+import Tasks from '../features/task/Tasks';
 
 import 'semantic-ui-css/semantic.min.css'
 
@@ -38,7 +38,7 @@ function App() {
                         setSignInModalOpen(true)
                     }}/>
                     <Route path="/profile" exact component={Profile}/>
-                    <Route path="/tasks" exact component={TaskList}/>
+                    <Route path="/tasks" exact component={Tasks}/>
                 </Switch>
             </BrowserRouter>
         </div>

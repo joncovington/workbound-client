@@ -20,8 +20,9 @@ export const loginOnLoad = createAsyncThunk(
     'auth/loginOnLoad', 
     async (token, { rejectWithValue }) => {
         try {
-            const response = await workboundApi.post('user/token/refresh/', JSON.stringify({refresh: token}))
-            return response.data
+            const response = await workboundApi.post('user/token/refresh/', {refresh: token})
+            const data = await response.data
+            return data
         } catch (err) {
             if (!err.response) {
                 throw err

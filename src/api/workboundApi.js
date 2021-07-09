@@ -5,22 +5,19 @@ const baseURL = 'http://localhost:8000/api/v1/'
 const apiConnection = axios.create({
     baseURL: baseURL,
     headers: {
-        'Authorization': localStorage.getItem('access_token') 
-            ? 'JWT ' + localStorage.getItem('access_token')
-            : null,
         'Content-Type' : 'application/json',
         'Accept' : 'application/json',
     }
 });
 
-// apiConnection.interceptors.request.use(function (config) {
-//     // Do something before request is sent
-//     console.log(config)
-//     return config;
-//   }, function (error) {
-//     // Do something with request error
-//     return Promise.reject(error);
-//   });
+apiConnection.interceptors.request.use(function (config) {
+    // Do something before request is sent
+    console.log(config)
+    return config;
+  }, function (error) {
+    // Do something with request error
+    return Promise.reject(error);
+  });
 
 apiConnection.interceptors.response.use(
 	(response) => {

@@ -6,7 +6,7 @@ const axiosBaseQuery = () => async ({ url, method, data}) => {
     const result = await workboundApi({
       url: url,
       method: method,
-      data: data
+      data: data,
     })
     return { data: result.data }
   }
@@ -25,9 +25,10 @@ export const apiSlice = createApi({
     endpoints: (builder) => {
         return {
             fetchTasks: builder.query({
-                query(limit = 10) {
+                query(args) {
+                    const { page, pageSize, titleSearch } = args;
                     return ({
-                      url: `/task/?limit=${limit}`,
+                      url: `task/?page=${page}&size=${pageSize}&title=${titleSearch}`,
                       method: 'GET'
                     })
                 },

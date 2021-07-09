@@ -30,10 +30,7 @@ const UserMenu = (props) => {
         <Dropdown.Menu>
             <Dropdown.Item as={Link} to='/profile' icon='user' content='Profile' />
             <Dropdown.Divider />
-            <Dropdown.Header>
-                Admin
-            </Dropdown.Header>
-            <Dropdown.Item icon='tasks' as={Link} to='/tasks' content='Tasks' />
+             <Dropdown.Item icon='tasks' as={Link} to='/tasks' content='Tasks' />
             <Dropdown.Divider />
             <Dropdown.Item>
                 <Button onClick={signOutClick}>Sign Out</Button>
