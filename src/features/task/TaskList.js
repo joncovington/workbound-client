@@ -13,7 +13,7 @@ const TaskList = (props) => {
     const {setTaskCount, pageSize, titleSearch} = props;
     const isSignedIn = useSelector(state => state.auth.isSignedIn);
     const user = useSelector(state => state.user)
-    console.log()
+    const taskPermissions = user.permissions.task
     const [page, setPage] = useState(1);
     const { data,
             isFetching,
@@ -23,7 +23,7 @@ const TaskList = (props) => {
             error } = useFetchTasksQuery({page: page,
                                             pageSize: pageSize, 
                                             titleSearch: titleSearch},
-                                            {skip: !isSignedIn});
+                                            {skip: !isSignedIn || !taskPermissions.view_task.status});
     
 
     const handlePaginationChange = (e, { activePage }) => {
@@ -36,18 +36,13 @@ const TaskList = (props) => {
         }
     }, [data, isSuccess, setTaskCount])
 
-    const taskPermissions = user.permissions.task
-    console.log(taskPermissions.view_task.status)
     if (isSignedIn && !taskPermissions.view_task.status) {
         return (
             <Segment basic>
-                {isError
-                    ? <Message negative>
-                        <Message.Header>No Permissions Found for Tasks.</Message.Header>
-                        <Message.Content>Please contact administrator to obtain the correct permissions.</Message.Content>
-                    </Message>
-                    : null
-                }
+                <Message negative>
+                    <Message.Header>No View Permission Found for Tasks.</Message.Header>
+                    <Message.Content>Please contact administrator to obtain the correct permissions.</Message.Content>
+                </Message>
             </Segment>
         )
     }
