@@ -6,7 +6,8 @@ import { Accordion,
          Dimmer,
          Loader,
          Pagination,
-         Message } from 'semantic-ui-react';
+         Message,
+         Grid } from 'semantic-ui-react';
 
 
 const TaskList = (props) => {
@@ -88,17 +89,23 @@ const TaskList = (props) => {
         })
 
         return (
+            results.length > 0 ?
             <Segment basic>
-                
-                    <Pagination
-                        size='mini'
-                        activePage={page}
-                        totalPages={Math.ceil(data.count / pageSize)}
-                        onPageChange={handlePaginationChange}
-                    />
-
+                <Grid>
+                    <Grid.Row>
+                        <Grid.Column width={16} textAlign='center'>
+                            <Pagination
+                                size='mini'
+                                activePage={page}
+                                totalPages={Math.ceil(data.count / pageSize)}
+                                onPageChange={handlePaginationChange}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
                 <Accordion fluid styled panels={panels} />
             </Segment>
+            : <Message warning>There are 0 tasks.</Message>
         )
     }
     
