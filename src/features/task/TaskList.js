@@ -98,31 +98,46 @@ const TaskList = (props) => {
         addTask(values)
     }
 
-    const renderAdminActions = (task) => {
-        return (
-            <Fragment>
-                {taskPermissions.change_task.status
-                 ? <Label 
+    const renderChangeTask = () => {
+        if (taskPermissions.change_task !== undefined) {
+            return taskPermissions.change_task.status
+                ? <Label 
                     as='a' 
                     size='small' 
                     content='Edit' 
                     color='blue' 
                     icon='edit'
+                />
+                : null
+        }
+    }
+
+    const renderAddTask = () => {
+        if (taskPermissions.add_task !== undefined) {
+            return taskPermissions.add_task.status
+                ? <Label corner='right'
+                    icon='plus'
+                    as='a'
+                    color='green'
+                    onClick={() => dispatch({ type: 'OPEN_ADD_MODAL' })}
                     />
-                 : null}
-                {taskPermissions.delete_task.status
-                 ? <Label 
-                    as='a' 
-                    size='small' 
-                    content='Delete' 
-                    color='red' 
-                    icon='remove circle'
-                    onClick={() => dispatch({type: 'OPEN_DELETE_MODAL', task: task})}
-                    />
-                 : null}
-            </Fragment>
-            
-        )
+                : null
+        }
+    }
+
+    const renderDeleteTask = (task) => {
+        if (taskPermissions.delete_task !== undefined){
+            return taskPermissions.delete_task.status
+                ? <Label 
+                   as='a' 
+                   size='small' 
+                   content='Delete' 
+                   color='red' 
+                   icon='remove circle'
+                   onClick={() => dispatch({type: 'OPEN_DELETE_MODAL', task: task})}
+                   />
+                : null
+        }
     }
 
     const renderPanelContent = (task) => {
@@ -187,7 +202,7 @@ const TaskList = (props) => {
                             }
                             </Grid.Column>
                             <Grid.Column textAlign='right' verticalAlign='bottom'>
-                                {renderAdminActions(task)}
+                                {renderChangeTask()}{renderDeleteTask(task)}
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
@@ -220,11 +235,7 @@ const TaskList = (props) => {
             results.length > 0 ?
             <Fragment>
                 <Segment basic>
-                <Label corner='right'
-                       icon='plus'
-                       as='a'
-                       color='green'
-                       onClick={() => dispatch({ type: 'OPEN_ADD_MODAL' })}/>
+                    {renderAddTask()}
                     <Accordion fluid styled panels={panels} />
                 </Segment>
                 <TransitionablePortal

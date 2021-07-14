@@ -26,22 +26,23 @@ const UserMenu = (props) => {
         </span>
       )
     
-    const taskMenuItem = <Fragment>
-                            <Dropdown.Item icon='tasks' as={Link} to='/tasks' content='Tasks' />
-                            <Dropdown.Divider />
-                        </Fragment>
+    const taskMenuItem = () => {
+        if (user.permissions.task.view_task !== undefined) {
+            return user.permissions.task.view_task.status
+                ? <Fragment>
+                    <Dropdown.Item icon='tasks' as={Link} to='/tasks' content='Tasks' />
+                    <Dropdown.Divider />
+                  </Fragment>
+                : null
+        }              
+    }
     
-
     return (
         <Dropdown item trigger={trigger} header={displayName}>
         <Dropdown.Menu>
             <Dropdown.Item onClick={() => dispatch(push('/profile'))} icon='user' content='Profile' />
             <Dropdown.Divider />
-            {user.permissions.task.view_task.status
-                ? taskMenuItem
-                : null
-            }
-             
+            {taskMenuItem()}
             <Dropdown.Item>
                 <Button onClick={signOutClick}>Sign Out</Button>
             </Dropdown.Item>

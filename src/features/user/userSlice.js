@@ -56,98 +56,7 @@ const INITIAL_STATE = {
     profile: {},
     error: null,
     isPermFetched: false,
-    permissions: {
-        task: {
-            add_task: {
-                verbose: "Can add Task",
-                status: false
-            },
-            change_task: {
-                verbose: "Can change Task",
-                status: false
-            },
-            delete_task: {
-                verbose: "Can delete Task",
-                status: false
-            },
-            view_task: {
-                verbose: "Can view Task",
-                status: false
-            }
-        },
-        category: {
-            add_category: {
-                verbose: "Can add Category",
-                status: false
-            },
-            change_category: {
-                "verbose": "Can change Category",
-                "status": false
-            },
-            delete_category: {
-                verbose: "Can delete Category",
-                status: false
-            },
-            view_category: {
-                verbose: "Can view Category",
-                status: false
-            }
-        },
-        workitem: {
-            add_workitem: {
-                verbose: "Can add WorkItem",
-                status: false
-            },
-            change_workitem: {
-                verbose: "Can change WorkItem",
-                status: false
-            },
-            delete_workitem: {
-                verbose: "Can delete WorkItem",
-                status: false
-            },
-            view_workitem: {
-                verbose: "Can view WorkItem",
-                status: false
-            }
-        },
-        section: {
-            add_section: {
-                verbose: "Can add Section",
-                status: false
-            },
-            change_section: {
-                verbose: "Can change Section",
-                status: false
-            },
-            delete_section: {
-                verbose: "Can delete Section",
-                status: false
-            },
-            view_section: {
-                verbose: "Can view Section",
-                status: false
-            }
-        },
-        portfolio: {
-            add_portfolio: {
-                verbose: "Can add Portfolio",
-                status: false
-            },
-            change_portfolio: {
-                verbose: "Can change Portfolio",
-                status: false
-            },
-            delete_portfolio: {
-                verbose: "Can delete Portfolio",
-                status: false
-            },
-            view_portfolio: {
-                verbose: "Can view Portfolio",
-                status: false
-            }
-        }
-    }
+    permissions: {}
 }
 
 export const userSlice = createSlice({
@@ -211,13 +120,14 @@ export const userSlice = createSlice({
         [fetchPermissions.fulfilled]: (state, action) => {
             state.status = 'succeeded'
             state.isPermFetched = true
-            action.payload.forEach((perm) => {
-                Object.keys(perm).forEach(key => {
-                    if (Object.keys(perm[key]).length > 0) {
-                        state.permissions[key] = perm[key]
-                    }
+            const permissionsObj = {}
+            action.payload.forEach(perm => {
+                Object.keys(perm).forEach(key =>{
+                    console.log(key)
+                    permissionsObj[key] = perm[key]
                 })
             })
+            state.permissions = permissionsObj
         },
         [fetchPermissions.rejected]: (state, action) => {
             state.status = 'failed'
