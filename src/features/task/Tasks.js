@@ -12,10 +12,12 @@ import { Segment,
 import TaskList from './TaskList';
 
 
+
 const Tasks = (props) => {
     const isSignedIn = useSelector(state => state.auth.isSignedIn);
     const permissionsFetched = useSelector(state => state.user.isPermFetched)
     const user = useSelector(state => state.user)
+    const taskPermissions = user.permissions.task
     const viewTaskPermission = user.permissions.task.view_task.status
 
     const [pageSize, setPageSize] = useState(10)
@@ -27,6 +29,7 @@ const Tasks = (props) => {
     const [error, setError] = useState({header: '', content: ''})
 
     const handlePageSizeChange = (e, { value }) => {
+        setPage(1)
         setPageSize(value)
     }
 
@@ -90,7 +93,7 @@ const Tasks = (props) => {
                                 placeholder='Search Tasks...'
                                 onChange={onSearchChange}
                                 value={titleSearch}
-                                />
+                            />
                         </Grid.Column>
                         <Grid.Column textAlign='right' width={4}>
                             <Dropdown 
@@ -118,24 +121,31 @@ const Tasks = (props) => {
                              : null
                             }
                         </Grid.Column>
-                        <Grid.Column width={4} />
-                    </Grid.Row>
-                    <Grid.Row>
-                        <Grid.Column>
-                        <Message negative hidden={!displayError}>
-                            <Message.Header>{error.header}</Message.Header>
-                            <Message.Content>{error.content}</Message.Content>
-                        </Message>
+                        <Grid.Column width={4} >
+                            
                         </Grid.Column>
                     </Grid.Row>
+                    {displayError
+                     ? <Grid.Row>
+                            <Grid.Column>
+                            <Message negative>
+                                <Message.Header>{error.header}</Message.Header>
+                                <Message.Content>{error.content}</Message.Content>
+                            </Message>
+                            </Grid.Column>
+                        </Grid.Row>
+                     : null
+                     }
+                    
                 </Grid>
                 {displayList
                  ? <TaskList
+                    user={user}
                     page={page}
                     setTaskCount={setTaskCount}
-                    setError={setError}
                     pageSize={pageSize} 
                     titleSearch={titleSearch}
+                    taskPermissions={taskPermissions}
                   />
                  : null
                 }

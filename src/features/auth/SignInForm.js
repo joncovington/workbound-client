@@ -110,6 +110,7 @@ function SignInForm(props) {
             </Message>
             <Form className="attached fluid segment" >        
                 <Form.Input
+                    id='emailInput'
                     name='email'
                     icon='envelope'
                     iconPosition='left'

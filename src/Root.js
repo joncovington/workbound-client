@@ -1,16 +1,16 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
-import store from './app/store'
+import { ConnectedRouter } from 'connected-react-router'
+import store, { history } from './app/store'
 
 
 
 const Root = (props) => {
     return (
         <Provider store={store}>
-            <BrowserRouter>
-                {props.children}            
-            </BrowserRouter>
+            <ConnectedRouter history={history}>
+                {props.children}
+            </ConnectedRouter>   
         </Provider>
     );
 };

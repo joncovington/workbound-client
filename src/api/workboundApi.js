@@ -1,4 +1,8 @@
 import axios from 'axios';
+import { push } from 'connected-react-router';
+import store from '../app/store'
+import { signOut } from '../features/auth/authSlice';
+import { clearProfile } from '../features/user/userSlice';
 
 const baseURL = 'http://localhost:8000/api/v1/'
 
@@ -32,6 +36,7 @@ apiConnection.interceptors.response.use(
 					'Looks like CORS might be the problem. ' +
 					'Sorry about this - we will get it fixed shortly.'
 			);
+			store.dispatch(push('/'))
 			return Promise.reject(error);
 		}
 
@@ -39,6 +44,9 @@ apiConnection.interceptors.response.use(
 			error.response.status === 401 &&
 			originalRequest.url === baseURL + 'user/token/refresh/'
 		) {
+			store.dispatch(clearProfile())
+        	store.dispatch(signOut(localStorage.getItem('refresh_token')))
+			store.dispatch(push('/'))
 			return Promise.reject(error);
 		}
 
@@ -71,12 +79,20 @@ apiConnection.interceptors.response.use(
 						})
 						.catch((err) => {
 							console.log(err);
+							store.dispatch(clearProfile())
+        					store.dispatch(signOut(localStorage.getItem('refresh_token')))
+							store.dispatch(push('/'))
 						});
 				} else {
 					console.log('Refresh token is expired', tokenParts.exp, now);
+					store.dispatch(clearProfile())
+        			store.dispatch(signOut(localStorage.getItem('refresh_token')))
+					store.dispatch(push('/'))
 				}
 			} else {
-				console.log('Refresh token not available.');
+				console.log('Refresh token not available.')
+				store.dispatch(clearProfile())
+				store.dispatch(push('/'))
 			}
 		}
 

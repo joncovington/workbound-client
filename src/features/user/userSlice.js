@@ -172,9 +172,14 @@ export const userSlice = createSlice({
             state.id = action.payload.id
             state.email = action.payload.email
             state.profile = action.payload.profile
-            action.payload.profile.image
-            ? state.profile.image = media_root + action.payload.profile.image
-            : state.profile.image = null
+            
+            if (action.payload.profile.image) {
+                state.profile.image = media_root + action.payload.profile.image
+                state.profile.thumbnail = media_root + action.payload.profile.thumbnail
+            } else {
+                state.profile.image = null
+                state.profile.thumbnail = null
+            }
         },
         [fetchProfile.rejected]: (state, action) => {
             state.status = 'failed'
