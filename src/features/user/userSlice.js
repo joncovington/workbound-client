@@ -123,7 +123,6 @@ export const userSlice = createSlice({
             const permissionsObj = {}
             action.payload.forEach(perm => {
                 Object.keys(perm).forEach(key =>{
-                    console.log(key)
                     permissionsObj[key] = perm[key]
                 })
             })

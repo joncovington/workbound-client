@@ -16,7 +16,6 @@ specifiers:
   connected-react-router: ^6.9.1
   enzyme: ^3.11.0
   formik: ^2.2.9
-  formik-semantic-ui-react: ^2.0.0
   history: ^4.10.1
   react: ^17.0.2
   react-dom: ^17.0.2
@@ -48,7 +47,6 @@ dependencies:
   connected-react-router: 6.9.1_7e4552cdc026a4bda18e398cb3ee29b8
   enzyme: 3.11.0
   formik: 2.2.9_react@17.0.2
-  formik-semantic-ui-react: 2.0.0_abe541b66ec8d14abb7625e2dc51914e
   history: 4.10.1
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
@@ -5787,19 +5785,6 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.31
-    dev: false
-
-  /formik-semantic-ui-react/2.0.0_abe541b66ec8d14abb7625e2dc51914e:
-    resolution: {integrity: sha512-vLFqhM4KaOTh3Bic52XaGBwjB+TB246Ud2uBYdwJJa7ZJukEpgauXPz4IKAOkTu6q2RroUVvKrNH5jajo/qkEA==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      formik: ^2.0.0
-      react: '>=16.8.0'
-      semantic-ui-react: ^2.0.0
-    dependencies:
-      formik: 2.2.9_react@17.0.2
-      react: 17.0.2
-      semantic-ui-react: 2.0.3_react-dom@17.0.2+react@17.0.2
     dev: false
 
   /formik/2.2.9_react@17.0.2:

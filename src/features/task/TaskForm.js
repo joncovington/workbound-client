@@ -2,14 +2,28 @@ import React from 'react';
 import { Formik } from 'formik';
 import { Button, Grid, Form } from 'semantic-ui-react';
 
-export const AddTaskForm = (props) => {
-    const { handleAddTask, onCancel } = props;
+export const TaskForm = (props) => {
+    const { onCancel, actionButtonText, onSubmit, deleteTask, task } = props;
     const initialValues = {
+        id: null,
         title: '',
         description: '',
         duration: 0,
         completionDays: 0
     }
+    
+    let taskValues = {}
+    if (task !== null){
+        taskValues = {
+                id: task.id,
+                title: task.title,
+                description: task.description,
+                duration: task.duration,
+                completionDays: task.completion_days
+            }
+
+    }
+    
     const validate = (values) => {
         const errors = {};
         if (!values.title) {
@@ -29,11 +43,9 @@ export const AddTaskForm = (props) => {
     }
 
     return (
-        <Formik initialValues={initialValues}
+        <Formik initialValues={taskValues ? taskValues : initialValues}
             validate={values => validate(values)}
-            onSubmit={ (values) => {
-                handleAddTask(values)
-            }}
+            onSubmit={(values) => onSubmit(values)}
             >
             {({
                 values,
@@ -58,6 +70,7 @@ export const AddTaskForm = (props) => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.title}
+                        disabled={deleteTask}
                     />
                     <Form.Input
                         error={errors.description !== undefined && touched.description? {content: errors.description, pointing: 'below'} : false}
@@ -69,6 +82,7 @@ export const AddTaskForm = (props) => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.description}
+                        disabled={deleteTask}
                     />
                     <Form.Group widths='equal'>
                         <Form.Input
@@ -81,6 +95,7 @@ export const AddTaskForm = (props) => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             value={values.duration}
+                            disabled={deleteTask}
                         />
                         <Form.Input
                             error={errors.completionDays !== undefined && touched.completionDays ? {content: errors.completionDays, pointing: 'above'} : false}
@@ -92,6 +107,7 @@ export const AddTaskForm = (props) => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             value={values.completionDays}
+                            disabled={deleteTask}
                         />
                     </Form.Group>
                     <Grid>
@@ -104,7 +120,7 @@ export const AddTaskForm = (props) => {
                                     content='Cancel'
                                     onClick={() => onCancel()}
                                 />
-                                <Button onClick={handleSubmit} icon='check' as='a' loading={isSubmitting} disabled={ isValid || isSubmitting ? false : true} color='green' content='Add Task'/>
+                                <Button onClick={handleSubmit} icon='check' as='a' loading={isSubmitting} disabled={ isValid || isSubmitting ? false : true} color='green' content={actionButtonText || 'Submit'}/>
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
@@ -116,4 +132,4 @@ export const AddTaskForm = (props) => {
     )
 }
 
-export default AddTaskForm;
+export default TaskForm;

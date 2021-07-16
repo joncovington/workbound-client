@@ -62,7 +62,7 @@ apiConnection.interceptors.response.use(
 
 				// refresh expiry date in token is expressed in seconds, while now() returns milliseconds:
 				const now = Math.ceil(Date.now() / 1000);
-				console.log(tokenParts.exp);
+				console.log('Token expiry: ' + tokenParts.exp);
 
 				if (tokenParts.exp > now) {
 					return apiConnection

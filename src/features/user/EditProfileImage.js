@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import {  Grid, Image, Button, Modal, Form, Placeholder } from 'semantic-ui-react';
+import {  Grid, Image, Button, Form, Placeholder } from 'semantic-ui-react';
 import { updateProfile } from './userSlice';
 
-const EditProfileModal = (props) => {
+const EditProfileForm = (props) => {
     const dispatch = useDispatch();
     const user = props.user;
     const [previewImage, setPreviewImage] = useState(user.profile.image);
@@ -31,18 +31,6 @@ const EditProfileModal = (props) => {
 
     return (
         <Form onSubmit={submit}>
-        <Modal 
-            closeIcon
-            size='tiny'
-            open={true} 
-            dimmer='blurring'
-            onClose={() => setOpen(false)}
-            onOpen={() => setOpen(true)}
-        >
-            <Modal.Header>
-                Edit Image
-            </Modal.Header>
-            <Modal.Content>
                 <Grid centered columns={2}>
                     <Grid.Column>
                         {previewImage 
@@ -85,33 +73,33 @@ const EditProfileModal = (props) => {
                             
                         </Grid.Column>
                     </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column width={16} textAlign='right'>
+                            <Button
+                                type='submit'
+                                content="Set New Image"
+                                labelPosition='right'
+                                icon='check'
+                                positive
+                                onClick={submit}
+                                disabled={!allowSubmit}
+                            />
+                            <Button
+                                content="Cancel"
+                                labelPosition='right'
+                                icon='ban'
+                                onClick={() => setOpen(false)}
+                                negative
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
                 </Grid>
-            </Modal.Content>
-            <Modal.Actions>
             <Form.Group>
-                <Button
-                    type='submit'
-                    content="Set New Image"
-                    labelPosition='right'
-                    icon='check'
-                    positive
-                    onClick={submit}
-                    disabled={!allowSubmit}
-                />
-                <Button
-                    content="Cancel"
-                    labelPosition='right'
-                    icon='ban'
-                    onClick={() => setOpen(false)}
-                    negative
-                />
-            </Form.Group>
                 
-            </Modal.Actions>
-            </Modal>
-            </Form>
+            </Form.Group>
+        </Form>
     )
 } 
 
 
-export default EditProfileModal;
+export default EditProfileForm;

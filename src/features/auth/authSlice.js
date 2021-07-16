@@ -56,7 +56,6 @@ export const authSlice = createSlice({
         status: 'idle',
         isSignedIn: false,
         error: null,
-        user: {},
     },
     extraReducers: {
         [fetchToken.pending]: (state) => {
@@ -66,7 +65,7 @@ export const authSlice = createSlice({
         [fetchToken.fulfilled]: (state, action) => {
             state.status = 'succeeded'
             state.isSignedIn = true
-            state.mediaRoot = 'http://localhost:'
+            state.mediaRoot = 'http://localhost:8000/'
             localStorage.setItem('refresh_token', action.payload.refresh)
             workboundApi.defaults.headers['Authorization'] = 'JWT '+ action.payload.access
             localStorage.setItem('wb_media_root', MEDIA_ROOT)
@@ -86,7 +85,6 @@ export const authSlice = createSlice({
         [loginOnLoad.rejected]: (state, action) => {
             state.status = 'failed'
             state.isSignedIn = false
-            state.error = action.payload
         },
         [signOut.pending]: (state) => {
             state.status = 'loading'
@@ -95,12 +93,12 @@ export const authSlice = createSlice({
             state.status = 'succeeded'
             state.isSignedIn = false
             state.error = null
-            state.user = {}
             delete workboundApi.defaults.headers['Authorization']
             localStorage.clear()
         },
         [signOut.rejected]: (state, action) => {
             state.status = 'failed'
+            state.isSignedIn = false
             state.error = action.payload
         },
         

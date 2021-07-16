@@ -64,7 +64,18 @@ export const apiSlice = createApi({
                   })
               },
               invalidatesTags: [{ type: 'Tasks', id: 'LIST' }]
-            })
+            }),
+            updateTask: builder.mutation({
+              query(args) {
+                  const { taskId, data } = args;
+                  return ({
+                    url: `task/${taskId}/`,
+                    method: 'PATCH',
+                    data
+                  })
+              },
+              invalidatesTags: (result, error, { taskId }) => [{ type: 'Tasks', id: taskId}]
+            }),
         };
     }, 
 });
@@ -72,4 +83,5 @@ export const apiSlice = createApi({
 export const { useFetchTasksQuery,
                useDeleteTaskMutation,
                useAddTaskMutation,
+               useUpdateTaskMutation,
                } = apiSlice;

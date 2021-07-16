@@ -4,9 +4,10 @@ import { Grid,
          Button,
          Divider,
          TransitionablePortal,
-         Placeholder } from 'semantic-ui-react';
+         Placeholder,
+         Modal } from 'semantic-ui-react';
 
-import EditProfileModal from './EditProfileImage';
+import EditProfileForm from './EditProfileImage';
 import ProfileDetail from './ProfileDetail'
 
 const ProfilePane = (props) => {
@@ -45,7 +46,22 @@ const ProfilePane = (props) => {
                 transition={{animation:'fade up', duration: 500}}
                 open={open}
             >
-                <EditProfileModal user={user} setOpen={setOpen} setSuccessVisible={setSuccessVisible} />
+                <Modal 
+                    closeIcon
+                    size='tiny'
+                    open={true} 
+                    dimmer='blurring'
+                    onClose={() => setOpen(false)}
+                    onOpen={() => setOpen(true)}
+                >
+                    <Modal.Header>
+                        Edit Image
+                    </Modal.Header>
+                    <Modal.Content>
+                        <EditProfileForm user={user} setOpen={setOpen} setSuccessVisible={setSuccessVisible} />
+                    </Modal.Content>
+                </Modal>
+                
             </TransitionablePortal>
         </Fragment>
     )

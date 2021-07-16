@@ -1,7 +1,9 @@
 import React, { Fragment, useEffect, useReducer } from 'react';
+import { useDispatch } from 'react-redux';
 import { useFetchTasksQuery,
          useDeleteTaskMutation,
-         useAddTaskMutation } from '../../api/apiSlice';
+         useAddTaskMutation,
+         useUpdateTaskMutation } from '../../api/apiSlice';
 import { Accordion,
          Label,
          Grid,
@@ -10,28 +12,53 @@ import { Accordion,
          Loader,
          Message,
          TransitionablePortal,
-         Modal,
-         Button,
-         Icon } from 'semantic-ui-react';
+         Modal } from 'semantic-ui-react';
 
-import AddTaskForm from './AddTaskForm';
+import TaskForm from './TaskForm';
+import { signOut } from '../auth/authSlice';
+import { push } from 'connected-react-router';
 
 const initialState = {
-    addOpen: false,
-    deleteOpen: false,
-    task: null
+    taskFormOpen: false,
+    task: null,
+    deleteTask: false,
+    formHeader: '',
+    actionButtonText: '',
+    onSubmit: null
 }
 
 function localReducer(state, action) {
     switch (action.type) {
         case 'OPEN_DELETE_MODAL':
-            return {...state, deleteOpen: true, task: action.task}
-        case 'CLOSE_DELETE_MODAL':
-            return {...state, deleteOpen: false, task: null }
+            return {...state,
+                    taskFormOpen: true,
+                    formHeader: `Are you sure you want to delete task "${action.task.title}"?`,
+                    task: action.task,
+                    deleteTask: true,
+                    actionButtonText: 'Delete Task',
+                    onSubmit: action.onSubmit}
         case 'OPEN_ADD_MODAL':
-            return {...state, addOpen: true, task: null}
-        case 'CLOSE_ADD_MODAL':
-            return {...state, addOpen: false, task: null }
+            return {...state,
+                    taskFormOpen: true,
+                    formHeader: 'Add a Task',
+                    actionButtonText: 'Add Task',
+                    task: null,
+                    onSubmit: action.onSubmit}
+        case 'OPEN_EDIT_MODAL':
+            return {...state,
+                    taskFormOpen: true,
+                    formHeader: `Edit Task: "${action.task.title}"`,
+                    actionButtonText: 'Update Task', 
+                    task: action.task,
+                    onSubmit: action.onSubmit}
+        case 'CLOSE_FORM_MODAL':
+            return {...state,
+                    taskFormOpen: false,
+                    formHeader: '',
+                    actionButtonText: '',
+                    task: null,
+                    deleteTask: false,
+                    onSubmit: null}
         default:
             throw new Error()
     }
@@ -39,6 +66,7 @@ function localReducer(state, action) {
 
 const TaskList = (props) => {
     const { user } = props;
+    const storeDispatch = useDispatch()
     const [state, dispatch] = useReducer(localReducer, initialState);
     const MEDIA_ROOT = localStorage.getItem('wb_media_root')
     const taskPermissions = props.taskPermissions
@@ -54,7 +82,7 @@ const TaskList = (props) => {
                                             );
     const [ deleteTask ] = useDeleteTaskMutation()
     const [ addTask ] = useAddTaskMutation()
-
+    const [ updateTask ] = useUpdateTaskMutation()
     useEffect(() => {
         if (isSuccess){
             setTaskCount(tasks.count)
@@ -62,6 +90,14 @@ const TaskList = (props) => {
     }, [tasks, isSuccess, setTaskCount])
 
     var results = []
+
+    useEffect(() => {
+        if (isError && error.status === undefined){
+            console.log('Unknown Error')
+            storeDispatch(signOut(localStorage.getItem('refresh_token')))
+            storeDispatch(push('/'))
+        }
+    }, [error, isError, storeDispatch])
 
     if (isError) {
         console.log(error)
@@ -84,21 +120,27 @@ const TaskList = (props) => {
         )
     }
 
-    const handleDelete = (id) => {
+    const handleDelete = ({id}) => {
         deleteTask({taskId: id})
-        dispatch({ type: 'CLOSE_DELETE_MODAL' })
+        dispatch({ type: 'CLOSE_FORM_MODAL' })
     }
 
     const handleAddTask = (values) => {
         values['completion_days'] = values['completionDays']
         delete values['completionDays']
         values['created_by'] = user.id
-        console.log(values)
-        dispatch({ type: 'CLOSE_ADD_MODAL' })
+        dispatch({ type: 'CLOSE_FORM_MODAL' })
         addTask(values)
     }
 
-    const renderChangeTask = () => {
+    const handleChangeTask = (values) => {
+        values['completion_days'] = values['completionDays']
+        delete values['completionDays']
+        console.log('Change Task: ', values)
+        dispatch({ type: 'CLOSE_FORM_MODAL' })
+    }
+
+    const renderChangeTask = (task) => {
         if (taskPermissions.change_task !== undefined) {
             return taskPermissions.change_task.status
                 ? <Label 
@@ -107,6 +149,7 @@ const TaskList = (props) => {
                     content='Edit' 
                     color='blue' 
                     icon='edit'
+                    onClick={() => dispatch({type: 'OPEN_EDIT_MODAL', task: task, onSubmit: handleChangeTask})}
                 />
                 : null
         }
@@ -119,7 +162,7 @@ const TaskList = (props) => {
                     icon='plus'
                     as='a'
                     color='green'
-                    onClick={() => dispatch({ type: 'OPEN_ADD_MODAL' })}
+                    onClick={() => dispatch({ type: 'OPEN_ADD_MODAL', onSubmit: handleAddTask })}
                     />
                 : null
         }
@@ -134,7 +177,7 @@ const TaskList = (props) => {
                    content='Delete' 
                    color='red' 
                    icon='remove circle'
-                   onClick={() => dispatch({type: 'OPEN_DELETE_MODAL', task: task})}
+                   onClick={() => dispatch({type: 'OPEN_DELETE_MODAL', task: task, onSubmit: handleDelete})}
                    />
                 : null
         }
@@ -202,7 +245,7 @@ const TaskList = (props) => {
                             }
                             </Grid.Column>
                             <Grid.Column textAlign='right' verticalAlign='bottom'>
-                                {renderChangeTask()}{renderDeleteTask(task)}
+                                {renderChangeTask(task)}{renderDeleteTask(task)}
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
@@ -240,41 +283,23 @@ const TaskList = (props) => {
                 </Segment>
                 <TransitionablePortal
                     transition={{animation:'fade up', duration: 500}}
-                    open={state.deleteOpen}
+                    open={state.taskFormOpen}
                 >
                     <Modal
                         closeIcon
                         open={true}
                         dimmer='blurring'
-                        onClose={() => dispatch({ type: 'CLOSE_DELETE_MODAL' })}
+                        onClose={() => dispatch({ type: 'CLOSE_FORM_MODAL' })}
                     >
-                        <Modal.Header>Delete Task</Modal.Header>
-                        <Modal.Content>Are you sure you want to delete task "{state.task ? state.task.title : null}"?</Modal.Content>
-                        <Modal.Actions>
-                            <Button color='red' onClick={() => dispatch({ type: 'CLOSE_DELETE_MODAL' })}>
-                            <Icon name='remove' /> No
-                            </Button>
-                            <Button color='green' onClick={(task) => handleDelete(state.task.id)}>
-                            <Icon name='checkmark' /> Yes
-                            </Button>
-                        </Modal.Actions>
-                    </Modal>
-                </TransitionablePortal>
-                <TransitionablePortal
-                    transition={{animation:'fade up', duration: 500}}
-                    open={state.addOpen}
-                >
-                    <Modal
-                        closeIcon
-                        open={true}
-                        dimmer='blurring'
-                        onClose={() => dispatch({ type: 'CLOSE_ADD_MODAL' })}
-                    >
-                        <Modal.Header>Add a Task</Modal.Header>
+                        <Modal.Header>{state.formHeader}</Modal.Header>
                         <Modal.Content>
-                            <AddTaskForm 
-                            onCancel={() => dispatch({ type: 'CLOSE_ADD_MODAL' })} 
-                            handleAddTask={handleAddTask}/>
+                            <TaskForm 
+                            onCancel={() => dispatch({ type: 'CLOSE_FORM_MODAL' })} 
+                            onSubmit={state.onSubmit}
+                            task={state.task}
+                            actionButtonText={state.actionButtonText}
+                            deleteTask={state.deleteTask}
+                            />
                         </Modal.Content>
                     </Modal>
                 </TransitionablePortal>
