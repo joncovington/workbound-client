@@ -1,5 +1,6 @@
 import React from 'react';
 import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { Button, Grid, Form, TransitionablePortal, Modal } from 'semantic-ui-react';
 
 export const TaskForm = (props) => {
@@ -22,28 +23,17 @@ export const TaskForm = (props) => {
             completionDays: task.completion_days
         }
     }
-    
-    const validate = (values) => {
-        const errors = {};
-        if (!values.title) {
-            errors.title = 'Required: Please enter a Title.';
-        }
-        if (!values.description) {
-            errors.description = 'Required: Please enter a Description.';
-        }
-        if (values.duration <= 0) {
-            errors.duration = 'Duration must be >= 1';
-        }
-        if (values.completionDays <= 0) {
-            errors.completionDays = 'Completion Days must be >= 1';
-        }
-        
-        return errors;
-    }
+
+    const taskSchema = Yup.object().shape({
+        title: Yup.string().required('Title is required.').matches(/^[A-Za-z0-9]+$/, 'Must be alphanumeric. No special characters'),
+        description: Yup.string().required('Description is required.'),
+        duration: Yup.number().required('Duration is required.').min(1, 'Must be greater than zero.'),
+        completionDays: Yup.number().required('Duration is required.').min(1, 'Must be greater than zero.')
+    })
 
     const formik = useFormik({
         initialValues: initialValues,
-        validate: values => validate(values),
+        validationSchema: taskSchema,
         onSubmit: values => onSubmit(values),
         enableReinitialize: true
     })
