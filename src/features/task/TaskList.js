@@ -10,9 +10,7 @@ import { Accordion,
          Segment,
          Dimmer,
          Loader,
-         Message,
-         TransitionablePortal,
-         Modal } from 'semantic-ui-react';
+         Message } from 'semantic-ui-react';
 
 import TaskForm from './TaskForm';
 import { signOut } from '../auth/authSlice';
@@ -83,6 +81,7 @@ const TaskList = (props) => {
     const [ deleteTask ] = useDeleteTaskMutation()
     const [ addTask ] = useAddTaskMutation()
     const [ updateTask ] = useUpdateTaskMutation()
+    
     useEffect(() => {
         if (isSuccess){
             setTaskCount(tasks.count)
@@ -283,28 +282,15 @@ const TaskList = (props) => {
                     {renderAddTask()}
                     <Accordion fluid styled panels={panels} />
                 </Segment>
-                <TransitionablePortal
-                    transition={{animation:'fade up', duration: 500}}
+                <TaskForm 
                     open={state.taskFormOpen}
-                >
-                    <Modal
-                        closeIcon
-                        open={true}
-                        dimmer='blurring'
-                        onClose={() => dispatch({ type: 'CLOSE_FORM_MODAL' })}
-                    >
-                        <Modal.Header>{state.formHeader}</Modal.Header>
-                        <Modal.Content>
-                            <TaskForm 
-                            onCancel={() => dispatch({ type: 'CLOSE_FORM_MODAL' })} 
-                            onSubmit={state.onSubmit}
-                            task={state.task}
-                            actionButtonText={state.actionButtonText}
-                            deleteTask={state.deleteTask}
-                            />
-                        </Modal.Content>
-                    </Modal>
-                </TransitionablePortal>
+                    onCancel={() => dispatch({ type: 'CLOSE_FORM_MODAL' })} 
+                    onSubmit={state.onSubmit}
+                    task={state.task}
+                    actionButtonText={state.actionButtonText}
+                    deleteTask={state.deleteTask}
+                    formHeader={state.formHeader}
+                />
             </Fragment>
             : <Message warning>There are 0 tasks.</Message>
         )

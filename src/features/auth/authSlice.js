@@ -79,7 +79,7 @@ export const authSlice = createSlice({
             if(action.payload.hasOwnProperty('detail')) {
                 state.error['signIn'] = action.payload['detail']
             } else {
-                state.error = action.payload
+                state.error = action.payload || {}
             }
             
         },
@@ -96,7 +96,8 @@ export const authSlice = createSlice({
         [loginOnLoad.rejected]: (state, action) => {
             state.status = 'failed'
             state.isSignedIn = false
-            state.error = action.payload
+            console.log(action.payload)
+            state.error = action.payload || {signOut: 'You have been signed out. Please sign in again.'}
         },
         [signOut.pending]: (state) => {
             state.status = 'loading'
