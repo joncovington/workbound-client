@@ -57,6 +57,9 @@ export const authSlice = createSlice({
         isSignedIn: false,
         error: {},
     },
+    reducers: {
+        clearErrors: (state) => {state.error = {}}
+    },
     extraReducers: {
         [fetchToken.pending]: (state) => {
             state.status = 'loading'
@@ -73,7 +76,12 @@ export const authSlice = createSlice({
         },
         [fetchToken.rejected]: (state, action) => {
             state.status = 'failed'
-            state.error = action.payload
+            if(action.payload.hasOwnProperty('detail')) {
+                state.error['signIn'] = action.payload['detail']
+            } else {
+                state.error = action.payload
+            }
+            
         },
         [loginOnLoad.pending]: (state) => {
             state.status = 'loading'
@@ -112,6 +120,5 @@ export const authSlice = createSlice({
       }
 });
 
-const { reducer } = authSlice
-
-export default reducer;
+export const { clearErrors } = authSlice.actions;
+export default authSlice.reducer;

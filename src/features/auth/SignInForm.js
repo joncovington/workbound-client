@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchToken } from './authSlice';
+import { fetchToken, clearErrors } from './authSlice';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Button, Form, Message, Modal, TransitionablePortal, Grid } from 'semantic-ui-react';
@@ -40,9 +40,12 @@ function SignInForm(props) {
     }
 
     useEffect(() => {
-        if (authError.hasOwnProperty('detail')){
-            setSignInError(authError.detail)
+        if (authError.hasOwnProperty('signIn')){
+            setSignInError(authError.signIn)
             setShowError(true)
+        } else {
+            setSignInError('')
+            setShowError(false)
         }
         
     }, [authError, signInError, formik])
@@ -64,12 +67,13 @@ function SignInForm(props) {
                 onClose={() => {
                     setOpen(false)
                     formik.resetForm()
+                    dispatch(clearErrors())
                 }}
                 open={true}
                 dimmer='blurring'
             >   {
                     showError 
-                    ?  <Message error floating>
+                    ?  <Message attached negative>
                             <Message.Header>There were some errors with your submission</Message.Header>
                             <Message.List>
                                 <Message.Item>{signInError}</Message.Item>
