@@ -12,7 +12,7 @@ export const FormInputs = ({config, formik, isDelete = false}) => {
     }
 
     const builder = (field, index) => {
-        const { name, label = '', type, errorPoint} = field;
+        const { name, label = '', type, errorPoint = 'below'} = field;
         switch (type) {
             case 'text':
                 return (

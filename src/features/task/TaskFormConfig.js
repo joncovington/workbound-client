@@ -47,8 +47,8 @@ export const taskInitialValues = (task = null) => {
         id: -1,
         title: '',
         description: '',
-        duration: 0,
-        completionDays: 0
+        duration: '0',
+        completionDays: '0'
     }
 
     if (task !== null){
