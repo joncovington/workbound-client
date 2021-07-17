@@ -288,7 +288,7 @@ const TaskList = (props) => {
                     onSubmit={state.onSubmit}
                     task={state.task}
                     actionButtonText={state.actionButtonText}
-                    deleteTask={state.deleteTask}
+                    isDelete={state.deleteTask}
                     formHeader={state.formHeader}
                 />
             </Fragment>
