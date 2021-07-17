@@ -31,8 +31,8 @@ const UserMenu = (props) => {
 
     useEffect(() => {
         if (isPermFetched) {
-            if (user.permissions.task.view_task !== undefined) {
-                setViewTaskPerm(true)
+            if (user.permissions.task !== undefined) {
+                user.permissions.task.view_task ? setViewTaskPerm(true) : setViewTaskPerm(false)
             }
         }
     }, [isPermFetched, user])

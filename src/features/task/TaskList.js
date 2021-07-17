@@ -134,10 +134,12 @@ const TaskList = (props) => {
     }
 
     const handleChangeTask = (values) => {
+        const taskId = values['id']
+        delete values['id']
         values['completion_days'] = values['completionDays']
         delete values['completionDays']
-        console.log('Change Task: ', values)
         dispatch({ type: 'CLOSE_FORM_MODAL' })
+        updateTask({taskId: taskId, data: values})
     }
 
     const renderChangeTask = (task) => {

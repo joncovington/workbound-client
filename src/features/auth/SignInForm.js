@@ -1,74 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchToken } from './authSlice';
-
-import { Button, Form, Message, Modal, TransitionablePortal } from 'semantic-ui-react';
-import { useForm } from '../../hooks'
-import { validate } from '../../validation'
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { Button, Form, Message, Modal, TransitionablePortal, Grid } from 'semantic-ui-react';
 
 function SignInForm(props) {
-    const isSignedIn = useSelector(state => state.auth.isSignedIn);
-    const authError = useSelector(state => state.auth.error);
-    
-    // initialize custom useForm hook
-    const { inputs,
-            setInputs,
-            handleInputChange,
-            handleSubmit,
-            handleBlur,
-            errors,
-            isSubmitting } = useForm(submit, validate)
-
+    const { setOpen } = props;
+    const { isSignedIn, error: authError } = useSelector(state => state.auth);
     const dispatch = useDispatch();
-
     const [showError, setShowError] = useState(false)
-    const [allowSubmit, setAllowSubmit] = useState(false)
-    
-    // disable submit button and show auth errors
-    useEffect(() => {
-        if (authError || errors) {
-            setShowError(true) 
-            setAllowSubmit(false)
-        } else {
-            setShowError(false)
-        }
-    }, [authError, errors]);
+    const [signInError, setSignInError] = useState('')
 
-    // redirect to root after successful sign in
-    useEffect(() => {
-        if (isSignedIn === true) {
-            props.setOpen(false)
-        }
-        
-    }, [isSignedIn, props])
+    const signInSchema = Yup.object().shape({
+        email: Yup.string().email('Invalid Email').required('Valid Email Required'),
+        password: Yup.string().required('Password Required')
+    })
 
-    // Only allow submit if input values are defined and no errors exist
-    useEffect(() => {
-        if (
-            inputs.email !== undefined
-            && inputs.password !== undefined
-            && Object.keys(errors).length === 0
-            ) { 
-                const { email, password } = inputs
-                if(email.value && password.value) {
-                    setAllowSubmit(true)
-                } else {
-                    setAllowSubmit(false)
-                }
-            };
-    }, [inputs, setAllowSubmit, errors])
-
-    // callback given to useForm handlechange
-    function submit() {
-        const emailVal = inputs.email.value
-        const passwordVal = inputs.password.value
-        setInputs({ email: {touched: false, value: ''}, password: {touched: false, value: ''}})
-        dispatch(fetchToken({
-        email: emailVal,
-        password: passwordVal
-        }));
-         
-    }
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            password: ''
+        },
+        onSubmit: (values) => {
+            dispatch(fetchToken(values))
+            document.getElementById('emailInput').focus()
+            formik.resetForm()
+            
+        },
+        validationSchema: signInSchema
+    });
 
     // configure error attribute for Semantic UI
     const errorConfig = (msg, pointing) => {
@@ -78,84 +39,100 @@ function SignInForm(props) {
           }
     }
 
-    // render Semantic UI components after auth fail
-    const renderAuthError = () => {
-        if (authError) {
-            return (
-            <Message error floating>
-                <Message.Header>There were some errors with your submission</Message.Header>
-                <Message.List>
-                    <Message.Item>{authError.detail}</Message.Item>
-                </Message.List>
-            </Message>
-            )
+    useEffect(() => {
+        if (authError.hasOwnProperty('detail')){
+            setSignInError(authError.detail)
+            setShowError(true)
         }
-        return null
-    }
+        
+    }, [authError, signInError, formik])
+
+    useEffect(() => {
+        if (isSignedIn) {
+            setOpen(false)
+        }
+    }, [isSignedIn, setOpen])
+
+    
 
     return (
         <TransitionablePortal
             transition={{animation:'fade up', duration: 500}}
             open={props.open}
         >
-        <Modal
-            onClose={() => props.setOpen(false)}
-            onOpen={() => props.setOpen(true)}
-            open={true}
-            dimmer='blurring'
-      >
-            {showError ? renderAuthError() : null}
-            <Message attached>
-                <Message.Header>Sign In</Message.Header>
-            </Message>
-            <Form className="attached fluid segment" >        
-                <Form.Input
-                    id='emailInput'
-                    name='email'
-                    icon='envelope'
-                    iconPosition='left'
-                    label='Email'
-                    placeholder='Email Address'
-                    required
-                    value={
-                        inputs.email
-                        ? inputs.email.value
-                        : ''}
-                    onChange={handleInputChange}
-                    onBlur={handleBlur}
-                    error={
-                        errors.email && errors.email.touched
-                        ? errorConfig(errors.email, 'below')
-                        : null
-                    }
-                />
-                <Form.Input
-                    name='password'
-                    type='password'
-                    icon='lock'
-                    iconPosition='left'
-                    label='Password'
-                    placeholder='Password'
-                    required
-                    value={
-                        inputs.password
-                        ? inputs.password.value
-                        : ''}
-                    onChange={handleInputChange}
-                    onBlur={handleBlur}
-                    error={
-                        errors.password
-                        ? errorConfig(errors.password, 'above')
-                        : null
-                    }
-                />
-                <Button
-                    primary 
-                    onClick={handleSubmit}
-                    disabled={ !allowSubmit ? true : false}
-                    loading={ isSubmitting ? true : false}
-                >Sign In</Button>
-            </Form>
+            <Modal
+                onClose={() => {
+                    setOpen(false)
+                    formik.resetForm()
+                }}
+                open={true}
+                dimmer='blurring'
+            >   {
+                    showError 
+                    ?  <Message error floating>
+                            <Message.Header>There were some errors with your submission</Message.Header>
+                            <Message.List>
+                                <Message.Item>{signInError}</Message.Item>
+                            </Message.List>
+                        </Message>
+                    : null
+                }
+                
+                <Message attached>
+                    <Message.Header>Sign In</Message.Header>
+                </Message>
+                <Form className="attached fluid segment" >        
+                    <Form.Input
+                        id='emailInput'
+                        name='email'
+                        icon='envelope'
+                        iconPosition='left'
+                        label='Email'
+                        placeholder='Email Address'
+                        required
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.errors.email && formik.touched.email
+                            ? errorConfig(formik.errors.email, 'below')
+                            : null
+                        }
+                    />
+                    <Form.Input
+                        name='password'
+                        type='password'
+                        icon='lock'
+                        iconPosition='left'
+                        label='Password'
+                        placeholder='Password'
+                        required
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.errors.password && formik.touched.password
+                            ? errorConfig(formik.errors.password, 'above')
+                            : null
+                        }
+                    />
+                    <Grid>
+                        <Grid.Row>
+                            <Grid.Column width={16} textAlign='right'>
+                                <Button
+                                    floated='right'
+                                    primary
+                                    type='submit'
+                                    onClick={formik.handleSubmit}
+                                    disabled={ !formik.isValid || formik.isSubmitting ? true : false}
+                                    loading={ formik.isSubmitting ? true : false}
+                                >Sign In</Button>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                    
+                </Form>
+            
         </Modal>
         </TransitionablePortal>
     );

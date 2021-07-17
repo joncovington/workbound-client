@@ -55,12 +55,12 @@ export const authSlice = createSlice({
     initialState: {
         status: 'idle',
         isSignedIn: false,
-        error: null,
+        error: {},
     },
     extraReducers: {
         [fetchToken.pending]: (state) => {
             state.status = 'loading'
-            state.error = null
+            state.error = {}
         },
         [fetchToken.fulfilled]: (state, action) => {
             state.status = 'succeeded'
@@ -69,6 +69,7 @@ export const authSlice = createSlice({
             localStorage.setItem('refresh_token', action.payload.refresh)
             workboundApi.defaults.headers['Authorization'] = 'JWT '+ action.payload.access
             localStorage.setItem('wb_media_root', MEDIA_ROOT)
+            state.error = {}
         },
         [fetchToken.rejected]: (state, action) => {
             state.status = 'failed'
@@ -76,30 +77,36 @@ export const authSlice = createSlice({
         },
         [loginOnLoad.pending]: (state) => {
             state.status = 'loading'
+            state.error = {}
         },
         [loginOnLoad.fulfilled]: (state, action) => {
             state.status = 'succeeded'
             workboundApi.defaults.headers['Authorization'] = 'JWT '+ action.payload.access
             state.isSignedIn = true
+            state.error = {}
         },
         [loginOnLoad.rejected]: (state, action) => {
             state.status = 'failed'
             state.isSignedIn = false
+            state.error = action.payload
         },
         [signOut.pending]: (state) => {
             state.status = 'loading'
+            state.error = {}
         },
         [signOut.fulfilled]: (state, action) => {
             state.status = 'succeeded'
             state.isSignedIn = false
-            state.error = null
             delete workboundApi.defaults.headers['Authorization']
             localStorage.clear()
+            state.error = {signOut: 'You have been successfully signed out.'}
         },
         [signOut.rejected]: (state, action) => {
             state.status = 'failed'
             state.isSignedIn = false
-            state.error = action.payload
+            delete workboundApi.defaults.headers['Authorization']
+            localStorage.clear()
+            state.error = {signOut: 'You have been signed out. Please sign in again.'}
         },
         
       }
