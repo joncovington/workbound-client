@@ -205,13 +205,8 @@ const CategoryList = (props) => {
             }
         })
 
-        return (
-            results.length > 0 ?
-            <>
-                <Segment basic>
-                    {renderAddButton()}
-                    <Accordion fluid styled panels={panels} />
-                </Segment>
+        const renderForm = () => {
+            return (
                 <CategoryForm 
                     open={state.formOpen}
                     onCancel={() => dispatch({ type: 'CLOSE_FORM_MODAL' })} 
@@ -221,8 +216,40 @@ const CategoryList = (props) => {
                     isDelete={state.isDelete}
                     formHeader={state.formHeader}
                 />
+            )
+        }
+
+        return (
+            results.length > 0 ?
+            <>
+                <Segment basic>
+                    <Accordion fluid styled panels={panels} />
+                    {renderForm()}
+                </Segment>
+                {renderAddButton()}
             </>
-            : <Message warning>There are 0 categories.</Message>
+            : <>
+                {renderAddButton()}
+                <Message warning>
+                    <Grid>
+                        <Grid.Row>
+                            <Grid.Column width={8}>
+                                There are 0 categories.
+                            </Grid.Column>
+                            <Grid.Column textAlign='right' width={8}>
+                            <Label
+                                content='Add Category'
+                                icon='plus'
+                                as='a'
+                                color='green'
+                                onClick={() => dispatch({ type: 'OPEN_ADD_MODAL', objType: 'Category', onSubmit: handleAdd })}
+                            />
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </Message>
+                {renderForm()}
+              </>
         )
     }
 

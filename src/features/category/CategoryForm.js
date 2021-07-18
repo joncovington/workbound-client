@@ -14,7 +14,7 @@ export const CategoryForm = ({ onCancel,
                            category,
                            open,
                            formHeader}) => {
-
+    
     const formik = useFormik({
         initialValues: categoryInitialValues(category),
         validationSchema: categorySchema,

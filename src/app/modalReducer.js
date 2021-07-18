@@ -29,7 +29,7 @@ export function modalReducer(state, action) {
                     formOpen: true,
                     formHeader: `Edit ${action.objType}: "${action.obj.title}"`,
                     actionButtonText: `Update ${action.objType}`, 
-                    obj: action.task,
+                    obj: action.obj,
                     onSubmit: action.onSubmit}
         case 'CLOSE_FORM_MODAL':
             return {...state,

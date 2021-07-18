@@ -11,61 +11,15 @@ import { Accordion,
          Dimmer,
          Loader,
          Message } from 'semantic-ui-react';
-
+import { modalReducer, initialState } from '../../app/modalReducer';
 import TaskForm from './TaskForm';
 import { signOut } from '../auth/authSlice';
 import { push } from 'connected-react-router';
 
-const initialState = {
-    taskFormOpen: false,
-    task: null,
-    deleteTask: false,
-    formHeader: '',
-    actionButtonText: '',
-    onSubmit: null
-}
-
-function localReducer(state, action) {
-    switch (action.type) {
-        case 'OPEN_DELETE_MODAL':
-            return {...state,
-                    taskFormOpen: true,
-                    formHeader: `Are you sure you want to delete task "${action.task.title}"?`,
-                    task: action.task,
-                    deleteTask: true,
-                    actionButtonText: 'Delete Task',
-                    onSubmit: action.onSubmit}
-        case 'OPEN_ADD_MODAL':
-            return {...state,
-                    taskFormOpen: true,
-                    formHeader: 'Add a Task',
-                    actionButtonText: 'Add Task',
-                    task: null,
-                    onSubmit: action.onSubmit}
-        case 'OPEN_EDIT_MODAL':
-            return {...state,
-                    taskFormOpen: true,
-                    formHeader: `Edit Task: "${action.task.title}"`,
-                    actionButtonText: 'Update Task', 
-                    task: action.task,
-                    onSubmit: action.onSubmit}
-        case 'CLOSE_FORM_MODAL':
-            return {...state,
-                    taskFormOpen: false,
-                    formHeader: '',
-                    actionButtonText: '',
-                    task: null,
-                    deleteTask: false,
-                    onSubmit: null}
-        default:
-            throw new Error()
-    }
-}
-
 const TaskList = (props) => {
     const { user } = props;
     const storeDispatch = useDispatch()
-    const [state, dispatch] = useReducer(localReducer, initialState);
+    const [state, dispatch] = useReducer(modalReducer, initialState);
     const MEDIA_ROOT = localStorage.getItem('wb_media_root')
     const taskPermissions = props.taskPermissions
     const {setTaskCount, pageSize, titleSearch, page} = props;
@@ -149,7 +103,7 @@ const TaskList = (props) => {
                 content='Edit' 
                 color='blue' 
                 icon='edit'
-                onClick={() => dispatch({type: 'OPEN_EDIT_MODAL', task: task, onSubmit: handleChangeTask})}
+                onClick={() => dispatch({type: 'OPEN_EDIT_MODAL', obj: task, objType: 'Task', onSubmit: handleChangeTask})}
             />
             : null
     }
@@ -160,20 +114,20 @@ const TaskList = (props) => {
                 icon='plus'
                 as='a'
                 color='green'
-                onClick={() => dispatch({ type: 'OPEN_ADD_MODAL', onSubmit: handleAddTask })}
+                onClick={() => dispatch({ type: 'OPEN_ADD_MODAL', objType: 'Task', onSubmit: handleAddTask })}
                 />
             : null
     }
 
     const renderDeleteTask = (task) => {
         return taskPermissions?.delete_task?.status
-            ? <Label 
+            ? <Label
+                content='Delete'
                 as='a' 
-                size='small' 
-                content='Delete' 
+                size='small'  
                 color='red' 
                 icon='remove circle'
-                onClick={() => dispatch({type: 'OPEN_DELETE_MODAL', task: task, onSubmit: handleDelete})}
+                onClick={() => dispatch({type: 'OPEN_DELETE_MODAL', obj: task, objType: 'Task', onSubmit: handleDelete})}
                 />
             : null
     }
@@ -244,6 +198,7 @@ const TaskList = (props) => {
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
+                
             </>
         )
 
@@ -269,24 +224,50 @@ const TaskList = (props) => {
             }
         })
 
-        return (
-            results.length > 0 ?
-            <Fragment>
-                <Segment basic>
-                    {renderAddTask()}
-                    <Accordion fluid styled panels={panels} />
-                </Segment>
+        const renderForm = () => {
+            return (
                 <TaskForm 
-                    open={state.taskFormOpen}
+                    open={state.formOpen}
                     onCancel={() => dispatch({ type: 'CLOSE_FORM_MODAL' })} 
                     onSubmit={state.onSubmit}
-                    task={state.task}
+                    task={state.obj}
                     actionButtonText={state.actionButtonText}
-                    isDelete={state.deleteTask}
+                    isDelete={state.isDelete}
                     formHeader={state.formHeader}
                 />
-            </Fragment>
-            : <Message warning>There are 0 tasks.</Message>
+            )
+        }
+
+        return (
+            results.length > 0 ?
+            <>  {renderAddTask()}
+                <Segment basic>
+                    <Accordion fluid styled panels={panels} />
+                </Segment>
+                {renderForm()}
+                
+            </>
+            : <>
+                <Message warning>
+                    <Grid>
+                        <Grid.Row>
+                            <Grid.Column width={8}>
+                                There are 0 tasks.
+                            </Grid.Column>
+                            <Grid.Column textAlign='right' width={8}>
+                            <Label
+                                content='Add Task'
+                                icon='plus'
+                                as='a'
+                                color='green'
+                                onClick={() => dispatch({ type: 'OPEN_ADD_MODAL', objType: 'Task', onSubmit: handleAddTask })}
+                            />
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </Message>
+                {renderForm()}
+              </>
         )
     }
 
