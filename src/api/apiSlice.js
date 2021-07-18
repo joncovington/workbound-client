@@ -22,7 +22,7 @@ const axiosBaseQuery = () => async ({ url, method, data}) => {
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: axiosBaseQuery(),
-    tagTypes: ['Tasks'],
+    tagTypes: ['Tasks', 'Categories'],
     endpoints: (builder) => {
         return {
             fetchTasks: builder.query({
@@ -76,6 +76,57 @@ export const apiSlice = createApi({
               },
               invalidatesTags: (result, error, { taskId }) => [{ type: 'Tasks', id: taskId}]
             }),
+            fetchCategories: builder.query({
+              query(args) {
+                  const { page, pageSize, titleSearch } = args;
+                  let url = `category/?page=${page}&size=${pageSize}`
+                  url = titleSearch ? url = url + `&search=${titleSearch}`: url
+                  return ({
+                    url: url,
+                    method: 'GET'
+                  })
+              },
+              providesTags: (result) => 
+                  result
+                  ?
+                  [
+                    ...result.results.map(({ id }) => ({ type: 'Categories', id })),
+                    { type: 'Categories', id: 'LIST' }
+                  ]
+                  :
+                  [{ type: 'Categories', id: 'LIST' }],
+              }),
+              deleteCategory: builder.mutation({
+                query(args) {
+                    const { categoryId } = args;
+                    return ({
+                      url: `category/${categoryId}/`,
+                      method: 'DELETE'
+                    })
+                },
+                invalidatesTags: (result, error, { categoryId }) => [{ type: 'Categories', id: categoryId }]
+              }),
+              addCategory: builder.mutation({
+                query(data) {
+                    return ({
+                      url: `category/`,
+                      method: 'POST',
+                      data
+                    })
+                },
+                invalidatesTags: [{ type: 'Categories', id: 'LIST' }]
+              }),
+              updateCategory: builder.mutation({
+                query(args) {
+                    const { categoryId, data } = args;
+                    return ({
+                      url: `category/${categoryId}/`,
+                      method: 'PATCH',
+                      data
+                    })
+                },
+                invalidatesTags: (result, error, { categoryId }) => [{ type: 'Categories', id: categoryId}]
+              }),
         };
     }, 
 });
@@ -84,4 +135,8 @@ export const { useFetchTasksQuery,
                useDeleteTaskMutation,
                useAddTaskMutation,
                useUpdateTaskMutation,
+               useFetchCategoriesQuery,
+               useDeleteCategoryMutation,
+               useAddCategoryMutation,
+               useUpdateCategoryMutation
                } = apiSlice;
