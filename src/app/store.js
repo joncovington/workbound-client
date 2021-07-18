@@ -13,7 +13,7 @@ export default configureStore({
       auth: authSliceReducer,
       user: userSliceReducer,
       router: connectRouter(history),
-      [apiSlice.reducerPath]: apiSlice.reducer
+      [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(apiSlice.middleware).concat(routerMiddleware(history));

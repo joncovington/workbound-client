@@ -18,7 +18,6 @@ const axiosBaseQuery = () => async ({ url, method, data}) => {
   }
 }
 
-
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: axiosBaseQuery(),

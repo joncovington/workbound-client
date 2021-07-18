@@ -142,50 +142,44 @@ const TaskList = (props) => {
     }
 
     const renderChangeTask = (task) => {
-        if (taskPermissions.change_task !== undefined) {
-            return taskPermissions.change_task.status
-                ? <Label 
-                    as='a' 
-                    size='small' 
-                    content='Edit' 
-                    color='blue' 
-                    icon='edit'
-                    onClick={() => dispatch({type: 'OPEN_EDIT_MODAL', task: task, onSubmit: handleChangeTask})}
-                />
-                : null
-        }
+        return taskPermissions?.change_task?.status
+            ? <Label 
+                as='a' 
+                size='small' 
+                content='Edit' 
+                color='blue' 
+                icon='edit'
+                onClick={() => dispatch({type: 'OPEN_EDIT_MODAL', task: task, onSubmit: handleChangeTask})}
+            />
+            : null
     }
 
     const renderAddTask = () => {
-        if (taskPermissions.add_task !== undefined) {
-            return taskPermissions.add_task.status
-                ? <Label corner='right'
-                    icon='plus'
-                    as='a'
-                    color='green'
-                    onClick={() => dispatch({ type: 'OPEN_ADD_MODAL', onSubmit: handleAddTask })}
-                    />
-                : null
-        }
+        return taskPermissions?.add_task?.status
+            ? <Label corner='right'
+                icon='plus'
+                as='a'
+                color='green'
+                onClick={() => dispatch({ type: 'OPEN_ADD_MODAL', onSubmit: handleAddTask })}
+                />
+            : null
     }
 
     const renderDeleteTask = (task) => {
-        if (taskPermissions.delete_task !== undefined){
-            return taskPermissions.delete_task.status
-                ? <Label 
-                   as='a' 
-                   size='small' 
-                   content='Delete' 
-                   color='red' 
-                   icon='remove circle'
-                   onClick={() => dispatch({type: 'OPEN_DELETE_MODAL', task: task, onSubmit: handleDelete})}
-                   />
-                : null
-        }
+        return taskPermissions?.delete_task?.status
+            ? <Label 
+                as='a' 
+                size='small' 
+                content='Delete' 
+                color='red' 
+                icon='remove circle'
+                onClick={() => dispatch({type: 'OPEN_DELETE_MODAL', task: task, onSubmit: handleDelete})}
+                />
+            : null
     }
 
     const renderPanelContent = (task) => {
-        var imageProps = {}
+        let imageProps = {}
         if (task.created_by.profile.thumbnail) {
               imageProps =   {
                 avatar: true,
@@ -195,7 +189,7 @@ const TaskList = (props) => {
         }            
 
         return (
-            <Fragment>
+            <>
             <Segment basic>
                 <Grid>
                     <Grid.Row>
@@ -225,32 +219,32 @@ const TaskList = (props) => {
                     </Grid.Row>
                 </Grid>                
             </Segment>
-                <Grid columns={2}>
-                        <Grid.Row>
-                            <Grid.Column textAlign='left' verticalAlign='middle'><small>Created By: </small>
-                            {
-                            task.created_by.profile.thumbnail
-                            ? <Label
-                                
-                                size='tiny'
-                                color='blue'
-                                content={task.created_by.email}
-                                image={imageProps}
-                                />
-                            : <Label
-                                size='tiny'
-                                color='blue'
-                                icon='user'
-                                content={task.created_by.email}
-                                />
-                            }
-                            </Grid.Column>
-                            <Grid.Column textAlign='right' verticalAlign='bottom'>
-                                {renderChangeTask(task)}{renderDeleteTask(task)}
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-            </Fragment>
+            <Grid columns={2}>
+                    <Grid.Row>
+                        <Grid.Column textAlign='left' verticalAlign='middle'><small>Created By: </small>
+                        {
+                        task.created_by.profile.thumbnail
+                        ? <Label
+                            
+                            size='tiny'
+                            color='blue'
+                            content={task.created_by.email}
+                            image={imageProps}
+                            />
+                        : <Label
+                            size='tiny'
+                            color='blue'
+                            icon='user'
+                            content={task.created_by.email}
+                            />
+                        }
+                        </Grid.Column>
+                        <Grid.Column textAlign='right' verticalAlign='bottom'>
+                            {renderChangeTask(task)}{renderDeleteTask(task)}
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </>
         )
 
     }

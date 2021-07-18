@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,6 +8,7 @@ import Header from './Header';
 import SignInForm from '../features/auth/SignInForm';
 import Profile from '../features/user/Profile';
 import Tasks from '../features/task/Tasks';
+import Categories from '../features/category/Categories';
 
 export const history = createMemoryHistory()
 
@@ -25,7 +26,7 @@ function App() {
     }, [dispatch, token, isSignedIn]);
 
     useEffect(() => {
-        if (!isSignedIn && error.hasOwnProperty('signOut')) {
+        if (!isSignedIn && error?.signOut) {
             setErrorMsg(error.signOut)
             setShowErrorMessage(true)
         } else if (isSignedIn) {
@@ -39,7 +40,7 @@ function App() {
     const [ signInModalOpen, setSignInModalOpen ] = useState(false);
 
     return (
-        <Fragment>
+        <>
             <Header signInOpen={setSignInModalOpen}/>
             <Transition visible={showErrorMsg} animation='fade up' duration={500}>
                 <Message negative onDismiss={()=>{setShowErrorMessage(false)}}>
@@ -56,8 +57,9 @@ function App() {
                     <Profile />
                 </Route>
                 <Route path="/tasks" exact component={Tasks}/>
+                <Route path="/categories" exact component={Categories}/>
             </Switch>
-        </Fragment>
+        </>
     );
     
 }

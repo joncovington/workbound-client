@@ -32,12 +32,8 @@ const UserMenu = (props) => {
 
     useEffect(() => {
         if (isPermFetched) {
-            if (user.permissions.task !== undefined) {
-                user.permissions.task.view_task ? setViewTaskPerm(true) : setViewTaskPerm(false)
-            }
-            if (user.permissions.category !== undefined) {
-                user.permissions.category.view_category ? setViewCategoryPerm(true) : setViewCategoryPerm(false)
-            }
+            user.permissions?.task?.view_task ? setViewTaskPerm(true) : setViewTaskPerm(false)
+            user.permissions?.category?.view_category ? setViewCategoryPerm(true) : setViewCategoryPerm(false)
         }
     }, [isPermFetched, user])
     
@@ -48,18 +44,18 @@ const UserMenu = (props) => {
     }
     const taskCategoryItem = () => {
         return viewCategoryPerm
-            ? <Dropdown.Item icon='list alternate' as={Link} to='/category' content='Categories' />
+            ? <Dropdown.Item icon='sitemap' as={Link} to='/categories' content='Categories' />
             : null     
-}
+    }
     
     return (
         <Dropdown item trigger={trigger} header={displayName}>
         <Dropdown.Menu>
             <Dropdown.Item onClick={() => dispatch(push('/profile'))} icon='user' content='Profile' />
-            <Dropdown.Divider />
+            
             {
                 viewTaskPerm || viewCategoryPerm 
-                ? <Dropdown.Header>Admin</Dropdown.Header>
+                ? <><Dropdown.Divider /><Dropdown.Header>Admin</Dropdown.Header></>
                 : null
             }
             {taskMenuItem()}

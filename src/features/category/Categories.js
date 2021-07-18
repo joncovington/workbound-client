@@ -9,21 +9,20 @@ import { Segment,
          Input,
          Pagination,
          Message } from 'semantic-ui-react';
-import TaskList from './TaskList';
+import CategoryList from './CategoryList';
 
-
-const Tasks = () => {
+const Categories = () => {
     const isSignedIn = useSelector(state => state.auth.isSignedIn);
     const permissionsFetched = useSelector(state => state.user.isPermFetched)
     const user = useSelector(state => state.user)
-    const taskPermissions = user.permissions.task
-    const viewTaskPermission = user.permissions.task.view_task.status
+    const categoryPermissions = user.permissions.category
+    const viewCategoryPemission = user.permissions.category?.view_category?.status
 
     const [pageSize, setPageSize] = useState(10)
     const [page, setPage] = useState(1);
-    const [searchString, setSearchString] = useState('')
+    const [searchString, setSearchString] = useState('');
     const [titleSearch, setTitleSearch] = useState('')
-    const [taskCount, setTaskCount] = useState(0)
+    const [categoryCount, setCategoryCount] = useState(0)
     const [displayError, setDisplayError] = useState(false)
     const [displayList, setDisplayList] = useState(false)
     const [error, setError] = useState({header: '', content: ''})
@@ -33,14 +32,14 @@ const Tasks = () => {
         setPageSize(value)
     }
 
+    const handlePaginationChange = (e, { activePage }) => {
+        setPage(activePage)
+    };
+
     useEffect(() => {
         const timeOutId = setTimeout(() => setTitleSearch(searchString), 500);
         return () => clearTimeout(timeOutId);
       }, [searchString]);
-
-    const handlePaginationChange = (e, { activePage }) => {
-        setPage(activePage)
-    };
 
     const options = [
         { key: 5, text: '5', value: 5 },
@@ -50,33 +49,37 @@ const Tasks = () => {
     ]
     
     useEffect(() => {
-        if (isSignedIn && permissionsFetched && viewTaskPermission) {
+        if (isSignedIn && permissionsFetched && viewCategoryPemission) {
             setDisplayList(true)
             setDisplayError(false)
         }
-        if (isSignedIn && permissionsFetched && !viewTaskPermission) {
+        if (isSignedIn && permissionsFetched && !viewCategoryPemission) {
             setDisplayError(true)
             setError({
-                header: 'No Permissions To View Tasks',
+                header: 'No Permissions To View Categories',
                 content: 'Please contact administrator to upgrade your permissions.'
             })
         }
-    }, [isSignedIn, viewTaskPermission, permissionsFetched])
-
+    }, [isSignedIn, viewCategoryPemission, permissionsFetched])
 
     return (
         <Segment>
             <Header as='h2' icon textAlign='center'>
-                <Icon name='tasks' circular />
-                <Header.Content>Tasks</Header.Content>
+                <Icon name='sitemap' circular />
+                <Header.Content>Categories</Header.Content>
             </Header>
             <Segment basic textAlign='center'>
-                Tasks are added to WorkItems as a requirement for completion.
+                Categories describe an organizational unit such as a 'department' and are an attribute of Sections.
             </Segment>
             <Grid>
                 <Grid.Row>
                     <Grid.Column textAlign='left' width={4}>
-                        <Label>{taskCount} Task{ taskCount !== 1 ? 's' : null}</Label>
+                        <Label>
+                            {categoryCount} 
+                            { categoryCount !== 1
+                                ? ' Categories'
+                                : ' Category'}
+                        </Label>
                     </Grid.Column>
                     <Grid.Column textAlign='center' width={8}>
                         <Input 
@@ -99,11 +102,11 @@ const Tasks = () => {
                 <Grid.Row>
                     <Grid.Column width={4} />
                     <Grid.Column textAlign='center' width={8}>
-                        {taskCount > 0 && displayList === true
+                        {categoryCount > 0 && displayList === true
                             ? <Pagination
                             size='mini'
                             activePage={page}
-                            totalPages={Math.ceil(taskCount / pageSize)}
+                            totalPages={Math.ceil(categoryCount / pageSize)}
                             onPageChange={handlePaginationChange}
                             firstItem={{ content: <Icon name='angle double left' />, icon: true }}
                             lastItem={{ content: <Icon name='angle double right' />, icon: true }}
@@ -129,19 +132,18 @@ const Tasks = () => {
                     }
             </Grid>
             {displayList
-                ? <TaskList
+                ? <CategoryList
                     user={user}
                     page={page}
-                    setTaskCount={setTaskCount}
+                    setCategoryCount={setCategoryCount}
                     pageSize={pageSize} 
                     titleSearch={titleSearch}
-                    taskPermissions={taskPermissions}
+                    categoryPermissions={categoryPermissions}
                 />
                 : null
             }
-                
         </Segment>
     )
 }
 
-export default Tasks;
+export default Categories;
