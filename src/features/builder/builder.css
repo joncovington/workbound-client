@@ -1,0 +1,13 @@
+.actionButton {
+    color: #5fa5d9;
+    background-color: aliceblue;
+}
+.actionButton:hover {
+    color: #0969b3;
+    background-color: white;
+    cursor: pointer;
+}
+
+.helpIcon:hover {
+    cursor: pointer;
+}

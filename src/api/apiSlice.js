@@ -77,8 +77,11 @@ export const apiSlice = createApi({
             }),
             fetchCategories: builder.query({
               query(args) {
-                  const { page, pageSize, titleSearch } = args;
-                  let url = `category/?page=${page}&size=${pageSize}`
+                  const { page = null, pageSize = null, titleSearch } = args;
+                  let url = 'category/'
+                  url = page || pageSize || titleSearch ? url + '?' : url
+                  url = page ? url + `?page=${page}` : url
+                  url = pageSize ? url + `&size=${pageSize}` : url
                   url = titleSearch ? url = url + `&search=${titleSearch}`: url
                   return ({
                     url: url,

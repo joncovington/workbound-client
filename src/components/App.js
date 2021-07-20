@@ -9,6 +9,7 @@ import SignInForm from '../features/auth/SignInForm';
 import Profile from '../features/user/Profile';
 import Tasks from '../features/task/Tasks';
 import Categories from '../features/category/Categories';
+import Builder from '../features/builder/Builder';
 
 export const history = createMemoryHistory()
 
@@ -18,6 +19,7 @@ function App() {
     const token = localStorage.getItem('refresh_token');
     const [ errorMsg, setErrorMsg] = useState('');
     const [ showErrorMsg, setShowErrorMessage ] = useState(false)
+    const currentPath = useSelector(state => state.router.location.pathname)
     
     useEffect(() => {
         if (token && !isSignedIn) {
@@ -36,8 +38,19 @@ function App() {
     
     }, [isSignedIn, error, status])
 
+    useEffect(() => {
+        currentPath === '/build'
+        ? setBuilderOpen(true)
+        : setBuilderOpen(false)
+
+        currentPath === '/profile'
+        ? setProfileOpen(true)
+        : setProfileOpen(false)
+    }, [currentPath])
 
     const [ signInModalOpen, setSignInModalOpen ] = useState(false);
+    const [ builderOpen, setBuilderOpen ] = useState(false);
+    const [ profileOpen, setProfileOpen ] = useState(false);
 
     return (
         <>
@@ -49,13 +62,13 @@ function App() {
                 </Message>
             </Transition>
             <SignInForm open={signInModalOpen} setOpen={setSignInModalOpen}/>
+            <Profile open={profileOpen} setOpen={setProfileOpen}/>
+            <Builder open={builderOpen} setOpen={setBuilderOpen}/>
+
             <Switch>
                 <Route path='/signin' render={() => {
                     setSignInModalOpen(true)
                 }}/>
-                <Route path='/profile' exact >
-                    <Profile />
-                </Route>
                 <Route path="/tasks" exact component={Tasks}/>
                 <Route path="/categories" exact component={Categories}/>
             </Switch>

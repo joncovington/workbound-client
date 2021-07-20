@@ -11,6 +11,7 @@ const UserMenu = (props) => {
     const isPermFetched = useSelector(state => state.user.isPermFetched)
     const [viewTaskPerm, setViewTaskPerm] = useState(false)
     const [viewCategoryPerm, setViewCategoryPerm] = useState(false)
+    const [addPortfolioPerm, setAddPortfolioPerm] = useState(false)
 
     const dispatch = useDispatch()
     const displayName = 
@@ -34,6 +35,7 @@ const UserMenu = (props) => {
         if (isPermFetched) {
             user.permissions?.task?.view_task ? setViewTaskPerm(true) : setViewTaskPerm(false)
             user.permissions?.category?.view_category ? setViewCategoryPerm(true) : setViewCategoryPerm(false)
+            user.permissions?.portfolio?.add_portfolio ? setAddPortfolioPerm(true) : setAddPortfolioPerm(false)
         }
     }, [isPermFetched, user])
     
@@ -42,9 +44,14 @@ const UserMenu = (props) => {
             ? <Dropdown.Item icon='tasks' as={Link} to='/tasks' content='Tasks' />
             : null     
     }
-    const taskCategoryItem = () => {
+    const categoryMenuItem = () => {
         return viewCategoryPerm
             ? <Dropdown.Item icon='sitemap' as={Link} to='/categories' content='Categories' />
+            : null     
+    }
+    const builderMenuItem = () => {
+        return addPortfolioPerm
+            ? <Dropdown.Item icon='object group' as={Link} to='/build' content='Build Portfolio' />
             : null     
     }
     
@@ -52,14 +59,19 @@ const UserMenu = (props) => {
         <Dropdown item trigger={trigger} header={displayName}>
         <Dropdown.Menu>
             <Dropdown.Item onClick={() => dispatch(push('/profile'))} icon='user' content='Profile' />
-            
+            {
+                addPortfolioPerm
+                ? <><Dropdown.Divider /><Dropdown.Header>Actions</Dropdown.Header></>
+                : null
+            }
+            {builderMenuItem()}
             {
                 viewTaskPerm || viewCategoryPerm 
                 ? <><Dropdown.Divider /><Dropdown.Header>Admin</Dropdown.Header></>
                 : null
             }
             {taskMenuItem()}
-            {taskCategoryItem()}
+            {categoryMenuItem()}
             <Dropdown.Divider />
             <Dropdown.Item>
                 <Button onClick={signOutClick}>Sign Out</Button>
