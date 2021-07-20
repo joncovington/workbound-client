@@ -9,7 +9,7 @@ import { Segment,
          Input,
          Pagination,
          Message } from 'semantic-ui-react';
-import CategoryList from './CategoryList';
+import CategoryList from 'features/category/CategoryList';
 
 const Categories = () => {
     const isSignedIn = useSelector(state => state.auth.isSignedIn);

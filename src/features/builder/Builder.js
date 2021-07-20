@@ -4,14 +4,14 @@ import { push } from 'connected-react-router';
 import { Grid } from 'semantic-ui-react';
 
 import { builderReducer, initialState } from './Builder.reducer';
-import { OPEN_MENU } from './Builder.types';
-import BuilderHeader from './BuilderHeader';
-import BuilderSteps from './BuilderSteps';
+import { OPEN_MENU } from 'features/builder/Builder.types';
+import BuilderHeader from 'features/builder/BuilderHeader';
+import BuilderSteps from 'features/builder/BuilderSteps';
 import './builder.css'
-import BuilderMenu from './BuilderMenu';
-import BuilderInfoForm from './BuilderInfoForm';
-import BuilderForm from './BuilderForm';
-import BuilderBreadcrumbs from './BuilderBreadcrumbs';
+import BuilderMenu from 'features/builder/BuilderMenu';
+import BuilderInfoForm from 'features/builder/BuilderInfoForm';
+import BuilderForm from 'features/builder/BuilderForm';
+import BuilderBreadcrumbs from 'features/builder/BuilderBreadcrumbs';
 
 const Builder = (props) => {
     const { open } = props;

@@ -2,7 +2,7 @@ import React, { useEffect }  from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Menu } from 'semantic-ui-react';
-import { fetchPermissions, fetchProfile } from '../features/user/userSlice';
+import { fetchPermissions, fetchProfile } from 'features/user/userSlice';
 
 import UserMenu from '../features/user/UserMenu';
 

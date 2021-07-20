@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import workboundApi from './workboundApi'
+import workboundApi from 'api/workboundApi'
 
 const axiosBaseQuery = () => async ({ url, method, data}) => {
   try {

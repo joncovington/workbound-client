@@ -2,8 +2,8 @@ import React from 'react';
 import { useFormik } from 'formik';
 import { Button, Grid, Form, TransitionablePortal, Modal } from 'semantic-ui-react';
 
-import FormInputs from '../../components/FormInputs'
-import { taskSchema, taskFormConfig, taskInitialValues } from './TaskFormConfig';
+import FormInputs from 'components/FormInputs'
+import { taskSchema, taskFormConfig, taskInitialValues } from 'features/task/TaskFormConfig';
 
 export const TaskForm = ({ onCancel,
                            actionButtonText,

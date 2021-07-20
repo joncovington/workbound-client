@@ -1,9 +1,10 @@
 import React, { useEffect, useReducer } from 'react';
 import { useDispatch } from 'react-redux';
+import { push } from 'connected-react-router';
 import { useFetchCategoriesQuery,
          useDeleteCategoryMutation,
          useAddCategoryMutation,
-         useUpdateCategoryMutation } from '../../api/apiSlice';
+         useUpdateCategoryMutation } from 'api/apiSlice';
 import { Accordion,
          Label,
          Grid,
@@ -11,11 +12,9 @@ import { Accordion,
          Dimmer,
          Loader,
          Message } from 'semantic-ui-react';
-import { initialState, modalReducer } from '../../app/modalReducer';
-
-import { signOut } from '../auth/authSlice';
-import { push } from 'connected-react-router';
-import CategoryForm from './CategoryForm';
+import { initialState, modalReducer } from 'app/modalReducer';
+import { signOut } from 'features/auth/authSlice';
+import CategoryForm from 'features/category/CategoryForm';
 
 const CategoryList = (props) => {
     const { user,

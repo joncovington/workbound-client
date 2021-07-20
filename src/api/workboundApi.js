@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { push } from 'connected-react-router';
-import store from '../app/store'
-import { signOut } from '../features/auth/authSlice';
-import { clearProfile } from '../features/user/userSlice';
+import store from 'app/store'
+import { signOut } from 'features/auth/authSlice';
+import { clearProfile } from 'features/user/userSlice';
 
 const baseURL = 'http://localhost:8000/api/v1/'
 

@@ -3,7 +3,7 @@ import { OPEN_MENU,
          SET_BUILD,
          OPEN_TEMPLATE,
          SET_REFERENCE, 
-         OPEN_FORM} from "./Builder.types"
+         OPEN_FORM} from "features/builder/Builder.types"
 
 export const initialState = {
     dialogPage: '',

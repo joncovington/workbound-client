@@ -9,7 +9,7 @@ import { Segment,
          Input,
          Pagination,
          Message } from 'semantic-ui-react';
-import TaskList from './TaskList';
+import TaskList from 'features/task/TaskList';
 
 
 const Tasks = () => {

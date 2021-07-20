@@ -3,13 +3,13 @@ import { Switch, Route } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { useDispatch, useSelector } from 'react-redux';
 import { Message, Transition } from 'semantic-ui-react';
-import { loginOnLoad } from '../features/auth/authSlice';
-import Header from './Header';
-import SignInForm from '../features/auth/SignInForm';
-import Profile from '../features/user/Profile';
-import Tasks from '../features/task/Tasks';
-import Categories from '../features/category/Categories';
-import Builder from '../features/builder/Builder';
+import { loginOnLoad } from 'features/auth/authSlice';
+import Header from 'components/Header';
+import SignInForm from 'features/auth/SignInForm';
+import Profile from 'features/user/Profile';
+import Tasks from 'features/task/Tasks';
+import Categories from 'features/category/Categories';
+import Builder from 'features/builder/Builder';
 
 export const history = createMemoryHistory()
 

@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
-import authSliceReducer from '../features/auth/authSlice'
-import userSliceReducer from '../features/user/userSlice'
-import { apiSlice } from '../api/apiSlice'
+import authSliceReducer from 'features/auth/authSlice'
+import userSliceReducer from 'features/user/userSlice'
+import { apiSlice } from 'api/apiSlice'
 
 import { createMemoryHistory } from 'history';
 import { connectRouter, routerMiddleware } from 'connected-react-router';

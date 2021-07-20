@@ -4,10 +4,10 @@ import { Form, Container, Label, Grid, Segment } from 'semantic-ui-react';
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 
-import { updateProfile } from './userSlice';
+import { updateProfile } from 'features/user/userSlice';
 
-import { useForm } from '../../hooks';
-import { validateProfile } from '../../validation';
+import { useForm } from 'hooks';
+import { validateProfile } from 'validation';
 
 
 const ProfileDetail = (props) => {

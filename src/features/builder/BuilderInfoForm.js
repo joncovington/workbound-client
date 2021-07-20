@@ -8,7 +8,10 @@ import { Header,
          Button,
          Confirm } from 'semantic-ui-react';
 
-import { OPEN_MENU, SET_REFERENCE, OPEN_TEMPLATE, OPEN_FORM } from './Builder.types';
+import { OPEN_MENU,
+         SET_REFERENCE,
+         OPEN_TEMPLATE,
+         OPEN_FORM } from 'features/builder/Builder.types';
 
 export const BuilderInfoForm = ({open, state, dispatch}) => {
     const { dialogPage } = state;

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Tab, Segment, Header, Message, Transition } from 'semantic-ui-react';
-import ProfilePane from './ProfilePane';
-import PermissionList from './PermissionList';
+import ProfilePane from 'features/user/ProfilePane';
+import PermissionList from 'features/user/PermissionList';
 
 function Profile(props) {
     const { open } = props;

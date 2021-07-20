@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { push } from 'connected-react-router'
 import { Link } from 'react-router-dom'
-import { signOut } from '../auth/authSlice'
-import { clearProfile } from './userSlice'
 import { Dropdown, Button, Image, Icon } from 'semantic-ui-react'
+import { signOut } from 'features/auth/authSlice'
+import { clearProfile } from 'features/user/userSlice'
+
 
 const UserMenu = (props) => {
     const user = useSelector(state => state.user)

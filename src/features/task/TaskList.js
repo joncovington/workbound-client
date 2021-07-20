@@ -1,9 +1,10 @@
 import React, { Fragment, useEffect, useReducer } from 'react';
 import { useDispatch } from 'react-redux';
+import { push } from 'connected-react-router';
 import { useFetchTasksQuery,
          useDeleteTaskMutation,
          useAddTaskMutation,
-         useUpdateTaskMutation } from '../../api/apiSlice';
+         useUpdateTaskMutation } from 'api/apiSlice';
 import { Accordion,
          Label,
          Grid,
@@ -11,10 +12,10 @@ import { Accordion,
          Dimmer,
          Loader,
          Message } from 'semantic-ui-react';
-import { modalReducer, initialState } from '../../app/modalReducer';
-import TaskForm from './TaskForm';
-import { signOut } from '../auth/authSlice';
-import { push } from 'connected-react-router';
+import { modalReducer, initialState } from 'app/modalReducer';
+import TaskForm from 'features/task/TaskForm';
+import { signOut } from 'features/auth/authSlice';
+
 
 const TaskList = (props) => {
     const { user } = props;

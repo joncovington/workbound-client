@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useFetchCategoriesQuery } from '../../api/apiSlice';
+import { useFetchCategoriesQuery } from 'api/apiSlice';
 import { Transition,
          Grid,
          Segment,

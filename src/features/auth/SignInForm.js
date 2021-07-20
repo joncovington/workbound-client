@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchToken, clearErrors } from './authSlice';
+import { fetchToken, clearErrors } from 'features/auth/authSlice';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Button, Form, Message, Modal, TransitionablePortal, Grid } from 'semantic-ui-react';

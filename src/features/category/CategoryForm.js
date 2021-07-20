@@ -2,10 +2,10 @@ import React from 'react';
 import { useFormik } from 'formik';
 import { Button, Grid, Form, TransitionablePortal, Modal } from 'semantic-ui-react';
 
-import FormInputs from '../../components/FormInputs'
+import FormInputs from 'components/FormInputs'
 import { categorySchema,
          categoryFormConfig,
-         categoryInitialValues } from './CategoryFormConfig';
+         categoryInitialValues } from 'features/category/CategoryFormConfig';
 
 export const CategoryForm = ({ onCancel,
                            actionButtonText,

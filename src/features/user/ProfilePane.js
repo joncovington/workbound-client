@@ -7,8 +7,8 @@ import { Grid,
          Placeholder,
          Modal } from 'semantic-ui-react';
 
-import EditProfileForm from './EditProfileImage';
-import ProfileDetail from './ProfileDetail'
+import EditProfileForm from 'features/user/EditProfileImage';
+import ProfileDetail from 'features/user/ProfileDetail'
 
 const ProfilePane = (props) => {
     const user = props.user;

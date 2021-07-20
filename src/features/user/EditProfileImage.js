@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import {  Grid, Image, Button, Form, Placeholder } from 'semantic-ui-react';
-import { updateProfile } from './userSlice';
+import { updateProfile } from 'features/user/userSlice';
 
 const EditProfileForm = (props) => {
     const dispatch = useDispatch();
