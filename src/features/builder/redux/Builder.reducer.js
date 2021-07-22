@@ -3,12 +3,14 @@ import { OPEN_MENU,
          SET_BUILD,
          OPEN_TEMPLATE,
          SET_REFERENCE, 
-         OPEN_FORM} from "features/builder/Builder.types"
+         OPEN_FORM,
+         SET_SECTIONS } from "features/builder/redux/Builder.types"
 
 export const initialState = {
     dialogPage: '',
     buildType: '',
-    referenceId: ''
+    referenceId: '',
+    sections: []
 }
 
 export function builderReducer(state, action) {
@@ -33,6 +35,9 @@ export function builderReducer(state, action) {
         case OPEN_FORM:
             return {...state,
                     dialogPage: 'form'}
+        case SET_SECTIONS:
+            return {...state,
+                    sections: action.sections}
         case 'CLOSE_ALL':
             return initialState
         default:

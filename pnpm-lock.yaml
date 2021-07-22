@@ -17,6 +17,7 @@ specifiers:
   enzyme: ^3.11.0
   formik: ^2.2.9
   history: ^4.10.1
+  prettier: ^2.3.2
   react: ^17.0.2
   react-dom: ^17.0.2
   react-phone-number-input: ^3.1.23
@@ -49,6 +50,7 @@ dependencies:
   enzyme: 3.11.0
   formik: 2.2.9_react@17.0.2
   history: 4.10.1
+  prettier: 2.3.2
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-phone-number-input: 3.1.25_react-dom@17.0.2+react@17.0.2
@@ -9560,6 +9562,12 @@ packages:
   /prepend-http/1.0.4:
     resolution: {integrity: sha1-1PRWKwzjaW5BrFLQ4ALlemNdxtw=}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /prettier/2.3.2:
+    resolution: {integrity: sha512-lnJzDfJ66zkMy58OL5/NY5zp70S7Nz6KqcKkXYzn2tMVrNxvbqaBpg7H3qHaLxCJ5lNMsGuM8+ohS7cZrthdLQ==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
     dev: false
 
   /pretty-bytes/5.6.0:

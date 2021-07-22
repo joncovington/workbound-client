@@ -11,7 +11,7 @@ import { Header,
 import { OPEN_MENU,
          SET_REFERENCE,
          OPEN_TEMPLATE,
-         OPEN_FORM } from 'features/builder/Builder.types';
+         OPEN_FORM } from 'features/builder/redux/Builder.types';
 
 export const BuilderInfoForm = ({open, state, dispatch}) => {
     const { dialogPage } = state;
@@ -32,7 +32,7 @@ export const BuilderInfoForm = ({open, state, dispatch}) => {
             <Segment attached='top' style={{height: '100%'}}>
             <Grid columns={1}>
                 <Grid.Column textAlign='left'>
-                    <Header style={{ color: '#5fa5d9'}}>Please provide some basic information:</Header>
+                    <Header as='h4' className='builderHeader'>Please provide some basic information:</Header>
                 </Grid.Column>
             </Grid>
             <Segment basic>

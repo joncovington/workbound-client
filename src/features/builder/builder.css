@@ -11,3 +11,38 @@
 .helpIcon:hover {
     cursor: pointer;
 }
+
+.sectionList {
+    padding: 0px 2px !important;
+    padding-bottom: 10px;
+}
+
+.sectionItem {
+    padding: 5px 0px !important;
+    border-bottom: 1px solid rgba(0,0,0,.1);
+}
+
+.sectionItem:last-child {
+    border-bottom: none;
+}
+
+.sectionItemActive {
+    background: rgba(0,0,0,.03);
+}
+
+.sectionItem:hover {
+    background: rgba(0,0,0,.03);
+}
+
+.title.active {
+    font-weight: 700;
+}
+
+.builderHeader {
+    color: #5fa5d9 !important;
+}
+.column.columnHeader {
+    font-weight: 700;
+    font-size: xx-small;
+    text-transform: uppercase;
+}

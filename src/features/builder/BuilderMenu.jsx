@@ -1,7 +1,7 @@
 import React from 'react';
 import { Segment, Header, Transition, Grid, Icon, Button } from 'semantic-ui-react';
 
-import { SET_BUILD, OPEN_INFOFORM } from 'features/builder/Builder.types';
+import { SET_BUILD, OPEN_INFOFORM } from 'features/builder/redux/Builder.types';
 
 export const BuilderMenu = ({open, state, dispatch}) => {
     

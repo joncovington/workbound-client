@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'connected-react-router';
 import { Grid } from 'semantic-ui-react';
 
-import { builderReducer, initialState } from './Builder.reducer';
-import { OPEN_MENU } from 'features/builder/Builder.types';
+import { builderReducer, initialState } from 'features/builder/redux/Builder.reducer';
+import { OPEN_MENU } from 'features/builder/redux/Builder.types';
 import BuilderHeader from 'features/builder/BuilderHeader';
 import BuilderSteps from 'features/builder/BuilderSteps';
 import './builder.css'
