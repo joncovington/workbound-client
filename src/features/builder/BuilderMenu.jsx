@@ -1,7 +1,6 @@
 import React from 'react';
 import { Segment, Header, Transition, Grid, Icon, Button } from 'semantic-ui-react';
-
-import { SET_BUILD, OPEN_INFOFORM } from 'features/builder/redux/Builder.types';
+import { setBuildType, openInfoForm } from 'features/builder/builderSlice';
 
 export const BuilderMenu = ({open, state, dispatch}) => {
     
@@ -18,8 +17,8 @@ export const BuilderMenu = ({open, state, dispatch}) => {
                                 </Grid.Column>
                                 <Grid.Column textAlign='center' verticalAlign='top' style={{paddingTop: '0px'}}>
                                     <Button color='purple' as='a' content='Use a Template' onClick={() => {
-                                        dispatch({type: SET_BUILD, buildType: 'template'})
-                                        dispatch({type: OPEN_INFOFORM})
+                                        dispatch(setBuildType({ buildType: 'template'}))
+                                        dispatch(openInfoForm())
                                     }} />
                                 </Grid.Column>
                             </Grid>
@@ -37,8 +36,8 @@ export const BuilderMenu = ({open, state, dispatch}) => {
                                     </Grid.Column>
                                     <Grid.Column textAlign='center' verticalAlign='middle' style={{paddingTop: '0px'}}>
                                         <Button color='green' as='a' content='Build a Portfolio' onClick={() => {
-                                            dispatch({type: SET_BUILD, buildType: 'manual'})
-                                            dispatch({type: OPEN_INFOFORM})
+                                            dispatch(setBuildType({ buildType: 'manual'}))
+                                            dispatch(openInfoForm())
                                         }} />
                                     </Grid.Column>
                                 </Grid>

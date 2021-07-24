@@ -1,31 +1,37 @@
-import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import React, { useState, useEffect, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useFetchCategoriesQuery } from "api/apiSlice";
 import {
   Transition,
   Grid,
   Segment,
   Button,
-  Dropdown,
   Message,
   Dimmer,
   Loader,
   Header,
   Icon,
   Popup,
-  Modal
+  Modal,
 } from "semantic-ui-react";
 
-import { OPEN_INFOFORM, SET_SECTIONS } from "features/builder/redux/Builder.types";
+import {
+  openInfoForm,
+  setSections,
+  addSection,
+  removeSection,
+} from "features/builder/builderSlice";
 
 import BuilderList from "features/builder/components/BuilderList.component";
+import AddButton from "features/builder/components/AddButton";
+import AddWorkItemModal from "features/builder/AddWorkItemModal";
 
-export const BuilderForm = ({ open, state, dispatch }) => {
-  const { dialogPage, sections } = state;
+export const BuilderForm = ({ open }) => {
+  const { workItems, sections, dialogPage } = useSelector((state) => state.builder);
+  const dispatch = useDispatch();
   const isSignedIn = useSelector((state) => state.auth.isSignedIn);
   const [showHelp, setShowHelp] = useState(false);
-  const [titleSearch, setTitleSearch] = useState("");
-  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [openAddWorkItem, setOpenAddWorkItem] = useState(false);
 
   const {
     data: categories,
@@ -35,50 +41,33 @@ export const BuilderForm = ({ open, state, dispatch }) => {
     isError: isCatError,
     error: catError,
   } = useFetchCategoriesQuery(
-    { page: null, pageSize: null, titleSearch: titleSearch },
+    { page: null, pageSize: null, titleSearch: null },
     { skip: !isSignedIn }
   );
 
-  const handleChangeSection = (e, { value }) => {
-    handleAddSection(value);
-  };
-
   const handleAddSection = (value) => {
-    const newUserSections = [];
-    let oldSection = categories?.results.find((cat) => cat.id === value)
-    const newSection = {id: oldSection.id, title: oldSection.title, tasks: []}
-    newUserSections.push(newSection);
-    dispatch({type: SET_SECTIONS, sections: (sections.concat(newUserSections))})
+    let oldSection = categories?.results.find((cat) => cat.id === value);
+    const newSection = {
+      id: oldSection.id,
+      title: oldSection.title,
+      tasks: [],
+    };
+    dispatch(addSection({ section: newSection }));
+    setOpenAddWorkItem(true);
   };
 
-  const setSections = (sections) => {
-    dispatch({type: SET_SECTIONS, sections: sections})
-  }
+  const handleRemoveSection = (index) => {
+    dispatch(removeSection({ section: index }));
+  };
 
-  useEffect(() => {
-    if (catSuccess && categories.results.length > 0) {
-      let options = [];
-      categories.results.forEach((category) => {
-        options.push({
-          key: `cat_${category.id}`,
-          value: category.id,
-          text: category.title,
-        });
-      });
-      setCategoryOptions(options);
-    }
-  }, [catSuccess, categories, setCategoryOptions]);
-
-  useEffect(() => {
-    if (dialogPage === "menu") {
-      dispatch({type: SET_SECTIONS, sections: []})
-    }
-  }, [dialogPage, dispatch]);
+  const setNewSections = (sections) => {
+    dispatch(setSections({ sections: sections }));
+  };
 
   if (isCatError) {
     console.log(catError);
     return (
-      <Transition visible={open && state.dialogPage === "form"}>
+      <Transition visible={open && dialogPage === "form"}>
         <Segment basic>
           <Message negative>
             <Message.Content>There was an error.</Message.Content>
@@ -90,7 +79,7 @@ export const BuilderForm = ({ open, state, dispatch }) => {
 
   if (catFetching || catLoading) {
     return (
-      <Transition visible={open && state.dialogPage === "form"}>
+      <Transition visible={open && dialogPage === "form"}>
         <Segment basic>
           <Dimmer active inverted>
             <Loader inverted>Loading</Loader>
@@ -103,7 +92,7 @@ export const BuilderForm = ({ open, state, dispatch }) => {
   if (catSuccess) {
     return (
       <Transition
-        visible={open && state.dialogPage === "form"}
+        visible={open && dialogPage === "form"}
         duration={{ hide: 0, show: 500 }}
         unmountOnHide
       >
@@ -154,29 +143,39 @@ export const BuilderForm = ({ open, state, dispatch }) => {
           </Grid.Row>
           <Grid.Row columns={1}>
             <Grid.Column textAlign="center">
-              <Dropdown
-                text="Add Section"
-                labeled
-                button
-                options={categoryOptions}
-                onChange={handleChangeSection}
-                icon="add"
-                className="icon"
+              <AddButton
+                items={categories}
+                handleAdd={handleAddSection}
+                content="Add Section"
+              />
+              <AddWorkItemModal
+                open={openAddWorkItem}
+                close={() => setOpenAddWorkItem(false)}
+                section={sections[sections.length - 1]}
+                dispatch={dispatch}
+                workItems={workItems}
               />
             </Grid.Column>
           </Grid.Row>
           <Grid.Row columns={1}>
             <Grid.Column style={{ height: "100%" }}>
-              <BuilderList items={sections} setItems={setSections}></BuilderList>
+              <BuilderList
+                items={sections}
+                setItems={setNewSections}
+                removeItem={handleRemoveSection}
+              ></BuilderList>
             </Grid.Column>
           </Grid.Row>
-          <Grid.Row style={{ borderTop: "1px" }} columns={2}>
+          <Grid.Row
+            style={{ borderTop: "1px solid rgba(34,36,38,.15)" }}
+            columns={2}
+          >
             <Grid.Column textAlign="left">
               <Button
                 labelPosition="right"
                 content="Back"
                 icon="arrow left"
-                onClick={() => dispatch({ type: OPEN_INFOFORM })}
+                onClick={() => dispatch(openInfoForm)}
               />
             </Grid.Column>
             <Grid.Column textAlign="right">

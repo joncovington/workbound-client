@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Header,
          Transition,
          Grid,
@@ -8,12 +9,11 @@ import { Header,
          Button,
          Confirm } from 'semantic-ui-react';
 
-import { OPEN_MENU,
-         SET_REFERENCE,
-         OPEN_TEMPLATE,
-         OPEN_FORM } from 'features/builder/redux/Builder.types';
+import { openMenu, setReference, openForm, openTemplate } from 'features/builder/builderSlice';
 
-export const BuilderInfoForm = ({open, state, dispatch}) => {
+export const BuilderInfoForm = ({ open }) => {
+    const dispatch = useDispatch();
+    const state = useSelector(state => state.builder);
     const { dialogPage } = state;
     const [ showExtraFields, setShowExtraFields ] = useState('')
     const [ resetConfirm, setResetConfirm ] = useState(false)
@@ -67,7 +67,7 @@ export const BuilderInfoForm = ({open, state, dispatch}) => {
                         </Grid.Row>
                         <Transition visible={showExtraFields === 'yes'}
                         unmountOnHide
-                        onHide={() => dispatch({type: SET_REFERENCE, referenceId: ''})}>
+                        onHide={() => dispatch(setReference({referenceId: ''}))}>
                         <Grid.Row>
                             <Grid.Column textAlign='right'>
                                 <Form.Field>
@@ -80,7 +80,7 @@ export const BuilderInfoForm = ({open, state, dispatch}) => {
                                     type='text'
                                     name='referenceId'
                                     value={state.referenceId}
-                                    onChange={(e, {value}) => dispatch({type: SET_REFERENCE, referenceId: value})}
+                                    onChange={(e, {value}) => dispatch(setReference({referenceId: value}))}
                                 />
                             </Grid.Column>
                         </Grid.Row>
@@ -107,7 +107,7 @@ export const BuilderInfoForm = ({open, state, dispatch}) => {
                                 onConfirm={() => {
                                     setShowExtraFields('')
                                     setResetConfirm(false)
-                                    dispatch({type: OPEN_MENU})
+                                    dispatch(openMenu())
                                 }}
                                 />
                     </Grid.Column>
@@ -120,10 +120,10 @@ export const BuilderInfoForm = ({open, state, dispatch}) => {
                             disabled={!showExtraFields || (showExtraFields === 'yes' && state.referenceId === '')}
                             onClick={() => {
                                 if (state.buildType === 'template'){
-                                    dispatch({type: OPEN_TEMPLATE})
+                                    dispatch(openTemplate())
                                 }
                                 if (state.buildType === 'manual'){
-                                    dispatch({type: OPEN_FORM})
+                                    dispatch(openForm())
                                 }
                             }}/>
                     </Grid.Column>

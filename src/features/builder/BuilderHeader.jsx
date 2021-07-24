@@ -1,8 +1,9 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Segment, Header, Transition, Grid, Popup, Icon } from 'semantic-ui-react';
 
-export const BuilderHeader = ({open, state, closeFn, resetFn}) => {
-    
+export const BuilderHeader = ({open, closeFn, resetFn}) => {
+    const openMenu = useSelector(state => state.builder.openMenu)
     return (
         <Transition visible={open} animation='slide down' duration={{hide: 0, show: 500}}>
             <Segment style={{ backgroundColor: '#5fa5d9'}}>
@@ -13,7 +14,7 @@ export const BuilderHeader = ({open, state, closeFn, resetFn}) => {
                         </Grid.Column>
                         <Grid.Column textAlign='right'>
                             {
-                                !state.openMenu
+                                !openMenu
                                 ? 
                                     <Popup content='Reset Builder'
                                         size='mini'

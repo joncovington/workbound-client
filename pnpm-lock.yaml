@@ -18,6 +18,7 @@ specifiers:
   formik: ^2.2.9
   history: ^4.10.1
   prettier: ^2.3.2
+  prop-types: ^15.7.2
   react: ^17.0.2
   react-dom: ^17.0.2
   react-phone-number-input: ^3.1.23
@@ -51,6 +52,7 @@ dependencies:
   formik: 2.2.9_react@17.0.2
   history: 4.10.1
   prettier: 2.3.2
+  prop-types: 15.7.2
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-phone-number-input: 3.1.25_react-dom@17.0.2+react@17.0.2

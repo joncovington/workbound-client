@@ -1,10 +1,9 @@
-import React, { useReducer, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'connected-react-router';
 import { Grid } from 'semantic-ui-react';
 
-import { builderReducer, initialState } from 'features/builder/redux/Builder.reducer';
-import { OPEN_MENU } from 'features/builder/redux/Builder.types';
+import { openMenu } from 'features/builder/builderSlice';
 import BuilderHeader from 'features/builder/BuilderHeader';
 import BuilderSteps from 'features/builder/BuilderSteps';
 import './builder.css'
@@ -15,26 +14,26 @@ import BuilderBreadcrumbs from 'features/builder/BuilderBreadcrumbs';
 
 const Builder = (props) => {
     const { open } = props;
-    const storeDispatch = useDispatch()
+    const dispatch = useDispatch()
     const currentPath = useSelector(state => state.router.location.pathname)
-    const [ state, dispatch ] = useReducer(builderReducer, initialState);
+    const state = useSelector(state => state.builder)
 
     useEffect(() => {
         if (currentPath !== '/build') {
-            dispatch({type: OPEN_MENU})
+            dispatch(openMenu())
         }
     }, [currentPath, dispatch])
 
     useEffect(() => {
-        console.log(state)
+        console.log('Builder State: ', state)
     }, [state])
 
     function closeFn() {
-        storeDispatch(push('/'))
+        dispatch(push('/'))
     }
 
     function resetFn() {
-        dispatch({type: OPEN_MENU})
+        dispatch(openMenu())
     }
 
     return (
@@ -51,8 +50,8 @@ const Builder = (props) => {
                 </Grid.Column>
                 <Grid.Column widescreen={12} tablet={12} computer={12} mobile={16}>
                     <BuilderMenu open={open} state={state} dispatch={dispatch}/>
-                    <BuilderInfoForm open={open} state={state} dispatch={dispatch}/>
-                    <BuilderForm open={open} state={state} dispatch={dispatch}/>
+                    <BuilderInfoForm open={open} />
+                    <BuilderForm open={open} />
                 </Grid.Column>
             </Grid>
             

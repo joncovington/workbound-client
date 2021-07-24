@@ -14,7 +14,6 @@
 
 .sectionList {
     padding: 0px 2px !important;
-    padding-bottom: 10px;
 }
 
 .sectionItem {
@@ -32,6 +31,7 @@
 
 .sectionItem:hover {
     background: rgba(0,0,0,.03);
+    cursor: pointer;
 }
 
 .title.active {
@@ -40,6 +40,9 @@
 
 .builderHeader {
     color: #5fa5d9 !important;
+}
+.row.rowHeader {
+    padding: 0px 0px !important;
 }
 .column.columnHeader {
     font-weight: 700;

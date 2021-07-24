@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import authSliceReducer from 'features/auth/authSlice'
 import userSliceReducer from 'features/user/userSlice'
+import builderSliceReducer from 'features/builder/builderSlice'
 import { apiSlice } from 'api/apiSlice'
 
 import { createMemoryHistory } from 'history';
@@ -13,6 +14,7 @@ export default configureStore({
       auth: authSliceReducer,
       user: userSliceReducer,
       router: connectRouter(history),
+      builder: builderSliceReducer,
       [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) => {
