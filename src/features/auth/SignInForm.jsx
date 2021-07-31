@@ -16,7 +16,10 @@ import {
   Grid,
   Segment,
   Divider,
+  Header,
 } from "semantic-ui-react";
+
+import "./SignInForm.styles.css";
 
 function SignInForm(props) {
   const { setOpen } = props;
@@ -92,73 +95,111 @@ function SignInForm(props) {
             </Message.List>
           </Message>
         ) : null}
-        <Message attached>
-          <Message.Header>Sign In</Message.Header>
-        </Message>
-        <Form className="attached fluid segment">
-          <Form.Input
-            id="emailInput"
-            name="email"
-            icon="envelope"
-            iconPosition="left"
-            label="Email"
-            placeholder="Email Address"
-            required
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={
-              formik.errors.email && formik.touched.email
-                ? errorConfig(formik.errors.email, "below")
-                : null
-            }
-          />
-          <Form.Input
-            name="password"
-            type="password"
-            icon="lock"
-            iconPosition="left"
-            label="Password"
-            placeholder="Password"
-            required
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={
-              formik.errors.password && formik.touched.password
-                ? errorConfig(formik.errors.password, "above")
-                : null
-            }
-          />
-          <Grid>
-            <Grid.Row>
-              <Grid.Column width={16} textAlign="right">
-                <Button
-                  floated="right"
-                  primary
-                  type="submit"
-                  onClick={formik.handleSubmit}
-                  disabled={
-                    !formik.isValid || formik.isSubmitting ? true : false
-                  }
-                  loading={formik.isSubmitting ? true : false}
+        <Grid>
+          <Grid.Row columns={2} verticalAlign="middle">
+            <Grid.Column mobile={16} tablet={8} widescreen={8} computer={8}>
+              <Form className="attached fluid">
+                <Segment basic>
+                  <Grid>
+                    <Grid.Row>
+                      <Grid.Column>
+                        <Header>Sign In</Header>
+                      </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                      <Grid.Column width={16}>
+                        <Form.Input
+                          id="emailInput"
+                          name="email"
+                          icon="envelope"
+                          iconPosition="left"
+                          label="Email"
+                          placeholder="Email Address"
+                          required
+                          value={formik.values.email}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          error={
+                            formik.errors.email && formik.touched.email
+                              ? errorConfig(formik.errors.email, "below")
+                              : null
+                          }
+                        />
+                        <Form.Input
+                          name="password"
+                          type="password"
+                          icon="lock"
+                          iconPosition="left"
+                          label="Password"
+                          placeholder="Password"
+                          required
+                          value={formik.values.password}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          error={
+                            formik.errors.password && formik.touched.password
+                              ? errorConfig(formik.errors.password, "above")
+                              : null
+                          }
+                        />
+                      </Grid.Column>
+                    </Grid.Row>
+                  </Grid>
+                </Segment>
+                <div
+                  style={{
+                    paddingRight: "4em",
+                    paddingLeft: "4em",
+                    paddingBottom: "1em",
+                  }}
                 >
-                  Sign In
-                </Button>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Form>
-        <Message attached>Sign In With Google</Message>
-        <Segment attached>
-          <Button
-            fluid
-            labelPosition="left"
-            icon="google"
-            content="Sign In With Google"
-            onClick={signInWithGoogle}
-          />
-        </Segment>
+                  <Button
+                    fluid
+                    labelPosition="left"
+                    icon="mail"
+                    primary
+                    type="submit"
+                    onClick={formik.handleSubmit}
+                    disabled={
+                      !formik.isValid || formik.isSubmitting ? true : false
+                    }
+                    loading={formik.isSubmitting ? true : false}
+                  content='Sign In With Email'
+                  />
+                </div>
+              </Form>
+            </Grid.Column>
+            <Grid.Column mobile={16} tablet={8} widescreen={8} computer={8}>
+              <Grid>
+                <Grid.Row only="mobile">
+                  <Grid.Column textAlign="center">
+                    <Header as='h5'>OR</Header>
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row className='googleButtonRow'>
+                  <Grid.Column width={16}>
+                    <Segment
+                      basic
+                      className='googleButtonSegment'
+                    >
+                      <Button
+                        color="red"
+                        fluid
+                        labelPosition="left"
+                        icon="google"
+                        content="Sign In With Google"
+                        onClick={signInWithGoogle}
+                      />
+                    </Segment>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+        <Divider className="signInDivider" vertical>
+          OR
+        </Divider>
       </Modal>
     </TransitionablePortal>
   );

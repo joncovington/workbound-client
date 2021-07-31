@@ -18,6 +18,7 @@ export const history = createMemoryHistory();
 function App() {
   const dispatch = useDispatch();
   const { isSignedIn, error, status } = useSelector((state) => state.auth);
+  const isPermFetched = useSelector((state) => state.user.isPermFetched);
   const userId = useSelector((state) => state.user.id);
   const token = localStorage.getItem("refresh_token");
   const [errorMsg, setErrorMsg] = useState("");
@@ -54,10 +55,10 @@ function App() {
   }, [dispatch, userId]);
 
   useEffect(() => {
-    currentPath === "/build" ? setBuilderOpen(true) : setBuilderOpen(false);
+    currentPath === "/build" && isPermFetched ? setBuilderOpen(true) : setBuilderOpen(false);
 
     currentPath === "/profile" ? setProfileOpen(true) : setProfileOpen(false);
-  }, [currentPath]);
+  }, [currentPath, isPermFetched]);
 
   const [signInModalOpen, setSignInModalOpen] = useState(false);
   const [builderOpen, setBuilderOpen] = useState(false);
@@ -78,8 +79,15 @@ function App() {
         </Message>
       </Transition>
       <SignInForm open={signInModalOpen} setOpen={setSignInModalOpen} />
-      <Profile open={profileOpen} setOpen={setProfileOpen} />
-      <Builder open={builderOpen} setOpen={setBuilderOpen} />
+      
+      {
+        isPermFetched
+        ? <>
+            <Profile open={profileOpen} setOpen={setProfileOpen} />
+            <Builder open={builderOpen} setOpen={setBuilderOpen} />
+          </>
+        : null
+      }
 
       <Switch>
         <Route
