@@ -1,125 +1,65 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import workboundApi from 'api/workboundApi';
+import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
+import apiConnection from "api/workboundApi";
+import workboundApi from "api/workboundApi";
+import { auth, firebaseConfig } from "../../firebase-utils/firebase";
 
-const MEDIA_ROOT = 'http://localhost:8000'
-
-export const fetchToken = createAsyncThunk(
-    'auth/fetchToken', 
-    async (formData, { rejectWithValue }) => {
-        try {
-            const response = await workboundApi.post('user/token/', JSON.stringify(formData))
-            return response.data
-        } catch (err) {
-            if (!err.response) {
-                throw err
-            }
-            return rejectWithValue(err.response.data)
-        }   
-    }
-);
-
-export const loginOnLoad = createAsyncThunk(
-    'auth/loginOnLoad', 
-    async (token, { rejectWithValue }) => {
-        try {
-            const response = await workboundApi.post('user/token/refresh/', {refresh: token})
-            const data = await response.data
-            return data
-        } catch (err) {
-            if (!err.response) {
-                throw err
-            }
-            return rejectWithValue(err.response.data)
-        }   
-    }
-);
-
-export const signOut = createAsyncThunk(
-    'auth/signOut', 
-    async (token, { rejectWithValue }) => {
-        try {
-            const response = await workboundApi.post('user/logout/', {refresh_token: token})
-            const data = await response.data
-            return data
-        } catch (err) {
-            if (!err.response) {
-                throw err
-            }
-            return rejectWithValue(err.response.data)
-        }   
-    }
-);
+const refreshToken = (refresh_token) => {
+  axios
+    .post(
+      `https://securetoken.googleapis.com/v1/token?key=${firebaseConfig.apiKey}`,
+      {
+        grant_type: "refresh_token",
+        refresh_token: refresh_token,
+      }
+    )
+    .then(function (response) {
+      localStorage.setItem("refresh_token", response.data.refresh_token);
+      apiConnection.defaults.headers.common["Authorization"] =
+        response.data.id_token;
+      return true;
+    })
+    .catch((error) => {
+      console.log(error)
+      return false;
+    });
+};
 
 export const authSlice = createSlice({
-    name: 'auth',
-    initialState: {
-        status: 'idle',
-        isSignedIn: false,
-        error: {},
+  name: "auth",
+  initialState: {
+    status: "idle",
+    isSignedIn: false,
+    error: {},
+  },
+  reducers: {
+    clearErrors: (state) => {
+      state.error = {};
     },
-    reducers: {
-        clearErrors: (state) => {state.error = {}}
+    signOut: (state) => {
+      state.isSignedIn = false;
+      delete workboundApi.defaults.headers.common["Authorization"];
+      localStorage.clear();
+      auth.signOut();
+      state.error["signOut"] = "You have been signed out";
     },
-    extraReducers: {
-        [fetchToken.pending]: (state) => {
-            state.status = 'loading'
-            state.error = {}
-        },
-        [fetchToken.fulfilled]: (state, action) => {
-            state.status = 'succeeded'
-            state.isSignedIn = true
-            state.mediaRoot = 'http://localhost:8000/'
-            localStorage.setItem('refresh_token', action.payload.refresh)
-            workboundApi.defaults.headers['Authorization'] = 'JWT '+ action.payload.access
-            localStorage.setItem('wb_media_root', MEDIA_ROOT)
-            state.error = {}
-        },
-        [fetchToken.rejected]: (state, action) => {
-            state.status = 'failed'
-            if(action.payload.hasOwnProperty('detail')) {
-                state.error['signIn'] = action.payload['detail']
-            } else {
-                state.error = action.payload || {}
-            }
-            
-        },
-        [loginOnLoad.pending]: (state) => {
-            state.status = 'loading'
-            state.error = {}
-        },
-        [loginOnLoad.fulfilled]: (state, action) => {
-            state.status = 'succeeded'
-            workboundApi.defaults.headers['Authorization'] = 'JWT '+ action.payload.access
-            state.isSignedIn = true
-            state.error = {}
-        },
-        [loginOnLoad.rejected]: (state, action) => {
-            state.status = 'failed'
-            state.isSignedIn = false
-            console.log(action.payload)
-            state.error = action.payload || {signOut: 'You have been signed out. Please sign in again.'}
-        },
-        [signOut.pending]: (state) => {
-            state.status = 'loading'
-            state.error = {}
-        },
-        [signOut.fulfilled]: (state, action) => {
-            state.status = 'succeeded'
-            state.isSignedIn = false
-            delete workboundApi.defaults.headers['Authorization']
-            localStorage.clear()
-            state.error = {signOut: 'You have been successfully signed out.'}
-        },
-        [signOut.rejected]: (state, action) => {
-            state.status = 'failed'
-            state.isSignedIn = false
-            delete workboundApi.defaults.headers['Authorization']
-            localStorage.clear()
-            state.error = {signOut: 'You have been signed out. Please sign in again.'}
-        },
-        
+    signInFirebase: (state, action) => {
+      state.isSignedIn = action.payload.signIn;
+      state.error = { signIn: action.payload.error };
+    },
+    loginOnLoad: (state, action) => {
+      let isRefreshed = refreshToken(action.payload)
+      if (isRefreshed) {
+        state.isSignedIn = true
+        state.error = {}
+      } else {
+        state.isSignedIn = false
+        state.error['signIn'] = 'You have been signed out. Please sign in again.'
       }
+    },
+  },
 });
 
-export const { clearErrors } = authSlice.actions;
+export const { clearErrors, signOut, loginOnLoad, signInFirebase } =
+  authSlice.actions;
 export default authSlice.reducer;

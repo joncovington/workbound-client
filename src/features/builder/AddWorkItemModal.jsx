@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Modal, TransitionablePortal, Grid, Message, Loader, Button } from "semantic-ui-react";
 
@@ -53,7 +53,7 @@ const AddWorkItemModal = ({ open, section, close, workItems }) => {
    } else {
     dispatch(setAllowAddWorkItem(false))
    }
-  }, [workItems])
+  }, [workItems, dispatch])
 
   if (isFetching || isLoading) {
     return (

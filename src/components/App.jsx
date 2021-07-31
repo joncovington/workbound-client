@@ -10,16 +10,28 @@ import Profile from 'features/user/Profile';
 import Tasks from 'features/task/Tasks';
 import Categories from 'features/category/Categories';
 import Builder from 'features/builder/Builder';
+import { onAuthStateChanged } from '../firebase-utils/firebase';
+import { fetchPermissions } from 'features/user/userSlice';
 
 export const history = createMemoryHistory()
 
 function App() {
     const dispatch = useDispatch();
     const { isSignedIn, error, status } = useSelector(state => state.auth);
+    const userId = useSelector(state => state.user.id)
     const token = localStorage.getItem('refresh_token');
     const [ errorMsg, setErrorMsg] = useState('');
     const [ showErrorMsg, setShowErrorMessage ] = useState(false)
     const currentPath = useSelector(state => state.router.location.pathname)
+
+    
+    
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged();
+        return () => {
+          unsubscribe();
+        };
+      }, [])
     
     useEffect(() => {
         if (token && !isSignedIn) {
@@ -37,6 +49,12 @@ function App() {
         }
     
     }, [isSignedIn, error, status])
+
+    useEffect(() => {
+        if (userId) {
+            dispatch(fetchPermissions())
+        }
+    }, [dispatch, userId])
 
     useEffect(() => {
         currentPath === '/build'

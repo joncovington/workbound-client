@@ -3,6 +3,7 @@ import { push } from 'connected-react-router';
 import store from 'app/store'
 import { signOut } from 'features/auth/authSlice';
 import { clearProfile } from 'features/user/userSlice';
+import { firebaseConfig } from 'firebase-utils/firebase';
 
 const baseURL = 'http://localhost:8000/api/v1/'
 
@@ -14,21 +15,13 @@ const apiConnection = axios.create({
     }
 });
 
-apiConnection.interceptors.request.use(function (config) {
-    // Do something before request is sent
-    console.log(config)
-    return config;
-  }, function (error) {
-    // Do something with request error
-    return Promise.reject(error);
-  });
-
 apiConnection.interceptors.response.use(
 	(response) => {
 		return response;
 	},
 	async function (error) {
 		const originalRequest = error.config;
+		console.log(error.status, error.response)
 
 		if (typeof error.response === 'undefined') {
 			alert(
@@ -41,59 +34,25 @@ apiConnection.interceptors.response.use(
 		}
 
 		if (
-			error.response.status === 401 &&
-			originalRequest.url === baseURL + 'user/token/refresh/'
+			error.response.status === 401
 		) {
-			store.dispatch(clearProfile())
-        	store.dispatch(signOut(localStorage.getItem('refresh_token')))
-			store.dispatch(push('/'))
-			return Promise.reject(error);
-		}
-
-		if (
-			error.response.data.code === 'token_not_valid' &&
-			error.response.status === 401 &&
-			error.response.statusText === 'Unauthorized'
-		) {
-			const refreshToken = localStorage.getItem('refresh_token');
-
-			if (refreshToken !== undefined || refreshToken !== null) {
-				const tokenParts = JSON.parse(atob(refreshToken.split('.')[1]));
-
-				// refresh expiry date in token is expressed in seconds, while now() returns milliseconds:
-				const now = Math.ceil(Date.now() / 1000);
-				console.log('Token expiry: ' + tokenParts.exp);
-
-				if (tokenParts.exp > now) {
-					return apiConnection
-						.post('user/token/refresh/', { refresh: refreshToken })
-						.then((response) => {
-							localStorage.setItem('refresh_token', response.data.refresh);
-
-							apiConnection.defaults.headers['Authorization'] =
-								'JWT ' + response.data.access;
-							originalRequest.headers['Authorization'] =
-								'JWT ' + response.data.access;
-
-							return apiConnection(originalRequest);
-						})
-						.catch((err) => {
-							console.log(err);
-							store.dispatch(clearProfile())
-        					store.dispatch(signOut(localStorage.getItem('refresh_token')))
-							store.dispatch(push('/'))
-						});
-				} else {
-					console.log('Refresh token is expired', tokenParts.exp, now);
-					store.dispatch(clearProfile())
-        			store.dispatch(signOut(localStorage.getItem('refresh_token')))
-					store.dispatch(push('/'))
-				}
-			} else {
-				console.log('Refresh token not available.')
+			const refresh = localStorage.getItem('refresh_token')
+			axios.post(`https://securetoken.googleapis.com/v1/token?key=${firebaseConfig.apiKey}`, {
+				grant_type: 'refresh_token',
+				refresh_token: refresh
+			  })
+			  .then(function (response) {
+				localStorage.setItem('refresh_token', response.data.refresh_token)
+				apiConnection.defaults.headers.common['Authorization'] = response.data.id_token
+				originalRequest.headers['Authorization'] = response.data.id_token
+				return axios(originalRequest)
+			  })
+			  .catch(error => {
 				store.dispatch(clearProfile())
+				store.dispatch(signOut())
 				store.dispatch(push('/'))
-			}
+				return Promise.reject(error);
+			  })
 		}
 
 		// specific error handling done elsewhere

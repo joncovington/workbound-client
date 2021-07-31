@@ -1,6 +1,5 @@
-import React, { Fragment, useEffect, useReducer } from 'react';
-import { useDispatch } from 'react-redux';
-import { push } from 'connected-react-router';
+import React, { useEffect, useReducer } from 'react';
+import { useSelector } from 'react-redux';
 import { useFetchTasksQuery,
          useDeleteTaskMutation,
          useAddTaskMutation,
@@ -14,12 +13,12 @@ import { Accordion,
          Message } from 'semantic-ui-react';
 import { modalReducer, initialState } from 'app/modalReducer';
 import TaskForm from 'features/task/TaskForm';
-import { signOut } from 'features/auth/authSlice';
 
 
 const TaskList = (props) => {
     const { user } = props;
-    const storeDispatch = useDispatch()
+    const isSignedIn = useSelector(state => state.auth.isSignedIn);
+    const isPermFetched = useSelector(state => state.user.isPermFetched);
     const [state, dispatch] = useReducer(modalReducer, initialState);
     const MEDIA_ROOT = localStorage.getItem('wb_media_root')
     const taskPermissions = props.taskPermissions
@@ -32,7 +31,7 @@ const TaskList = (props) => {
             error } = useFetchTasksQuery({page: page,
                                             pageSize: pageSize, 
                                             titleSearch: titleSearch},
-                                            );
+                                            {skip: !isSignedIn || !isPermFetched});
     const [ deleteTask ] = useDeleteTaskMutation()
     const [ addTask ] = useAddTaskMutation()
     const [ updateTask ] = useUpdateTaskMutation()
@@ -45,13 +44,6 @@ const TaskList = (props) => {
 
     var results = []
 
-    useEffect(() => {
-        if (isError && error.status === undefined){
-            console.log('Unknown Error')
-            storeDispatch(signOut(localStorage.getItem('refresh_token')))
-            storeDispatch(push('/'))
-        }
-    }, [error, isError, storeDispatch])
 
     if (isError) {
         console.log(error)
@@ -256,13 +248,16 @@ const TaskList = (props) => {
                                 There are 0 tasks.
                             </Grid.Column>
                             <Grid.Column textAlign='right' width={8}>
-                            <Label
-                                content='Add Task'
-                                icon='plus'
-                                as='a'
-                                color='green'
-                                onClick={() => dispatch({ type: 'OPEN_ADD_MODAL', objType: 'Task', onSubmit: handleAddTask })}
-                            />
+                            {taskPermissions?.add_task?.status
+                                ? <Label
+                                    content='Add Task'
+                                    icon='plus'
+                                    as='a'
+                                    color='green'
+                                    onClick={() => dispatch({ type: 'OPEN_ADD_MODAL', objType: 'Task', onSubmit: handleAddTask })}
+                                    />
+                                : null
+                            }
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>

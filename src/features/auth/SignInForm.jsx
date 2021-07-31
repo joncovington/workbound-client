@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchToken, clearErrors } from 'features/auth/authSlice';
+import { clearErrors } from 'features/auth/authSlice';
+import { signInWithEmailAndPassword, signInWithGoogle } from 'firebase-utils/firebase';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Button, Form, Message, Modal, TransitionablePortal, Grid } from 'semantic-ui-react';
+import { Button, Form, Message, Modal, TransitionablePortal, Grid, Segment, Divider } from 'semantic-ui-react';
 
 function SignInForm(props) {
     const { setOpen } = props;
@@ -23,7 +24,7 @@ function SignInForm(props) {
             password: ''
         },
         onSubmit: (values) => {
-            dispatch(fetchToken(values))
+            signInWithEmailAndPassword(values)
             document.getElementById('emailInput').focus()
             formik.resetForm()
             
@@ -40,8 +41,8 @@ function SignInForm(props) {
     }
 
     useEffect(() => {
-        if (authError.hasOwnProperty('signIn')){
-            setSignInError(authError.signIn)
+        if (authError.signIn){
+            setSignInError(authError?.signIn)
             setShowError(true)
         } else {
             setSignInError('')
@@ -136,6 +137,10 @@ function SignInForm(props) {
                     </Grid>
                     
                 </Form>
+                <Message attached>Sign In With Google</Message>
+                <Segment attached>
+                    <Button fluid labelPosition='left' icon='google' content='Sign In With Google' onClick={signInWithGoogle}/>
+                </Segment>
             
         </Modal>
         </TransitionablePortal>

@@ -1,6 +1,5 @@
 import React, { useEffect, useReducer } from 'react';
-import { useDispatch } from 'react-redux';
-import { push } from 'connected-react-router';
+import { useSelector } from 'react-redux';
 import { useFetchCategoriesQuery,
          useDeleteCategoryMutation,
          useAddCategoryMutation,
@@ -13,7 +12,6 @@ import { Accordion,
          Loader,
          Message } from 'semantic-ui-react';
 import { initialState, modalReducer } from 'app/modalReducer';
-import { signOut } from 'features/auth/authSlice';
 import CategoryForm from 'features/category/CategoryForm';
 
 const CategoryList = (props) => {
@@ -23,7 +21,8 @@ const CategoryList = (props) => {
             pageSize,
             titleSearch,
             page } = props;
-    const storeDispatch = useDispatch()
+    const isSignedIn = useSelector(state => state.auth.isSignedIn);
+    const isPermFetched = useSelector(state => state.user.isPermFetched);
     const [state, dispatch] = useReducer(modalReducer, initialState);
     const MEDIA_ROOT = localStorage.getItem('wb_media_root')
     const { data: categories,
@@ -34,6 +33,7 @@ const CategoryList = (props) => {
             error } = useFetchCategoriesQuery({page: page,
                                             pageSize: pageSize, 
                                             titleSearch: titleSearch},
+                                            {skip: !isSignedIn || !isPermFetched}
                                             );
     const [ deleteCategory ] = useDeleteCategoryMutation()
     const [ addCategory ] = useAddCategoryMutation()
@@ -47,13 +47,13 @@ const CategoryList = (props) => {
 
     var results = []
 
-    useEffect(() => {
-        if (isError && error.status === undefined){
-            console.log('Unknown Error')
-            storeDispatch(signOut(localStorage.getItem('refresh_token')))
-            storeDispatch(push('/'))
-        }
-    }, [error, isError, storeDispatch])
+    // useEffect(() => {
+    //     if (isError && error.status === undefined){
+    //         console.log('Unknown Error')
+    //         storeDispatch(signOut(localStorage.getItem('refresh_token')))
+    //         storeDispatch(push('/'))
+    //     }
+    // }, [error, isError, storeDispatch])
 
     if (isError) {
         console.log(error)

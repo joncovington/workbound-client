@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Transition, Grid, List, Icon, Message } from "semantic-ui-react";
+import { Transition, Grid, List, Icon } from "semantic-ui-react";
 
 import RoleInput from 'features/builder/components/RoleInput.component'
 
