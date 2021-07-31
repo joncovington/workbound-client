@@ -1,10 +1,9 @@
 import React, { useState, useCallback } from "react";
 import { Transition, Grid, List, Icon } from "semantic-ui-react";
 
-import RoleInput from 'features/builder/components/RoleInput.component'
+import RoleInput from "features/builder/components/RoleInput.component";
 
-const BuilderList = ({ items, setItems, removeItem, section = {}}) => {
-
+const BuilderList = ({ items, setItems, removeItem, section = {} }) => {
   const [selection, setSelection] = useState(null);
 
   const handleSelect = (index) => {
@@ -37,7 +36,7 @@ const BuilderList = ({ items, setItems, removeItem, section = {}}) => {
   return (
     <Transition visible={items.length !== 0}>
       <Transition.Group as={Grid} duration={200} className="sectionList">
-        <Grid.Row columns={4} className='rowHeader'>
+        <Grid.Row columns={4} className="rowHeader">
           <Grid.Column width={2} textAlign="center" className="columnHeader">
             Move
           </Grid.Column>
@@ -48,7 +47,7 @@ const BuilderList = ({ items, setItems, removeItem, section = {}}) => {
             Detail
           </Grid.Column>
           <Grid.Column width={7} className="columnHeader">
-            { section ? 'Assigned To': null}
+            {section ? "Assigned To" : null}
           </Grid.Column>
         </Grid.Row>
         {items.map((item, index) => (
@@ -97,7 +96,9 @@ const BuilderList = ({ items, setItems, removeItem, section = {}}) => {
               </List.Item>
             </Grid.Column>
             <Grid.Column width={5}>
-              {section ? <RoleInput section={section} index={index} item={item}/> : null}
+              {section ? (
+                <RoleInput section={section} index={index} item={item} />
+              ) : null}
             </Grid.Column>
             <Grid.Column width={1} textAlign="right">
               <Icon

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFetchRolesQuery } from "api/apiSlice";
 import { Dropdown, Message, Label, Transition } from "semantic-ui-react";
@@ -8,8 +8,8 @@ import { setWorkItems } from "features/builder/builderSlice";
 const RoleInput = (props) => {
   const dispatch = useDispatch();
   const { section, index, item } = props;
-  const workItems = useSelector(state => state.builder.workItems);
-  const thisWorkItem = workItems[index]
+  const workItems = useSelector((state) => state.builder.workItems);
+  const thisWorkItem = workItems[index];
   const {
     data: roleUsers,
     isSuccess,
@@ -23,10 +23,10 @@ const RoleInput = (props) => {
   );
 
   const assignUser = (userId) => {
-    let newWorkItems = JSON.parse(JSON.stringify(workItems))
-    newWorkItems[index]['assignedTo'] = userId
-    dispatch(setWorkItems({workItems: newWorkItems}))
-  }
+    let newWorkItems = JSON.parse(JSON.stringify(workItems));
+    newWorkItems[index]["assignedTo"] = userId;
+    dispatch(setWorkItems({ workItems: newWorkItems }));
+  };
 
   const [options, setOptions] = useState([]);
 
@@ -44,25 +44,24 @@ const RoleInput = (props) => {
     }
   }, [roleUsers, setOptions]);
 
-  const [warning, setWarning] = useState(true)
+  const [warning, setWarning] = useState(true);
 
   useEffect(() => {
     if (thisWorkItem?.assignedTo === null) {
-      setWarning(true)
+      setWarning(true);
     } else {
-      setWarning(false)
+      setWarning(false);
     }
-  }, [thisWorkItem])
+  }, [thisWorkItem]);
 
   const handleChange = (e) => {
     let userId = e.target.value;
     if (isNaN(parseInt(userId))) {
-      assignUser(null)
+      assignUser(null);
     } else {
-      assignUser(parseInt(userId))
+      assignUser(parseInt(userId));
     }
-    
-  }
+  };
 
   if (isError) {
     console.log(error);
@@ -74,28 +73,38 @@ const RoleInput = (props) => {
   }
 
   if (isFetching || isLoading) {
-    return <Dropdown loading fluid selection options={[]}/>;
+    return <Dropdown loading fluid selection options={[]} />;
   }
 
   if (isSuccess) {
     return (
-    <div>
-      <select className='ui fluid dropdown' name='assignedTo' onChange={e => {
-          handleChange(e)
-        }}>
-        <option key='none' value=''>Select User</option>
-        {options.map((option) => {
-          return (
-            <option key={option.key} value={option.value}>{option.text}</option>
-          )
-        })}
-      </select>
       <div>
-        <Transition visible={warning}>
-          <Label basic color='red' size='tiny' pointing='above'>WorkItem "{item.title}" must have assigned user.</Label>
-        </Transition>  
+        <select
+          className="ui fluid dropdown"
+          name="assignedTo"
+          onChange={(e) => {
+            handleChange(e);
+          }}
+        >
+          <option key="none" value="">
+            Select User
+          </option>
+          {options.map((option) => {
+            return (
+              <option key={option.key} value={option.value}>
+                {option.text}
+              </option>
+            );
+          })}
+        </select>
+        <div>
+          <Transition visible={warning}>
+            <Label basic color="red" size="tiny" pointing="above">
+              WorkItem "{item.title}" must have assigned user.
+            </Label>
+          </Transition>
         </div>
-    </div>
+      </div>
     );
   }
 };

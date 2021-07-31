@@ -9,23 +9,23 @@ import { Dropdown } from "semantic-ui-react";
  * @param {string} content string used as button text
  */
 const AddButton = ({ items, handleAdd, content }) => {
-  const { allowAddWorkItem } = useSelector(state => state.builder)
+  const { allowAddWorkItem } = useSelector((state) => state.builder);
   const [options, setOptions] = useState([]);
-  
-  const ddRef = useRef(null)
+
+  const ddRef = useRef(null);
   const handleChange = (e, { value }) => {
-      handleAdd(value);
+    handleAdd(value);
   };
 
   useEffect(() => {
-    let selectedItems = document.getElementsByClassName('selected item')
+    let selectedItems = document.getElementsByClassName("selected item");
     for (let item of selectedItems) {
-      item.classList.remove('active')
-      item.classList.remove('selected')
-      item.setAttribute('aria-checked', false)
-      item.setAttribute('aria-selected', false)
+      item.classList.remove("active");
+      item.classList.remove("selected");
+      item.setAttribute("aria-checked", false);
+      item.setAttribute("aria-selected", false);
     }
-  })
+  });
 
   useEffect(() => {
     if (items.results.length > 0) {
@@ -42,7 +42,7 @@ const AddButton = ({ items, handleAdd, content }) => {
   }, [items, setOptions]);
 
   return (
-      <Dropdown
+    <Dropdown
       disabled={!allowAddWorkItem}
       ref={ddRef}
       text={content}
@@ -56,8 +56,6 @@ const AddButton = ({ items, handleAdd, content }) => {
       onChange={handleChange}
       options={options}
     />
-
-    
   );
 };
 

@@ -20,7 +20,7 @@ export const initialState = {
   referenceId: "",
   sections: [],
   workItems: [],
-  allowAdd: true
+  allowAdd: true,
 };
 
 export function builderReducer(state, action) {
@@ -56,7 +56,7 @@ export function builderReducer(state, action) {
       );
       return { ...state, workItems: hasRemovedWorkItems };
     case SET_ALLOW_ADD:
-      return { ...state, allowAdd: action.allowAdd}
+      return { ...state, allowAdd: action.allowAdd };
     case "CLOSE_ALL":
       return initialState;
     default:

@@ -20,7 +20,7 @@ const refreshToken = (refresh_token) => {
       return true;
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
       return false;
     });
 };
@@ -48,13 +48,14 @@ export const authSlice = createSlice({
       state.error = { signIn: action.payload.error };
     },
     loginOnLoad: (state, action) => {
-      let isRefreshed = refreshToken(action.payload)
+      let isRefreshed = refreshToken(action.payload);
       if (isRefreshed) {
-        state.isSignedIn = true
-        state.error = {}
+        state.isSignedIn = true;
+        state.error = {};
       } else {
-        state.isSignedIn = false
-        state.error['signIn'] = 'You have been signed out. Please sign in again.'
+        state.isSignedIn = false;
+        state.error["signIn"] =
+          "You have been signed out. Please sign in again.";
       }
     },
   },

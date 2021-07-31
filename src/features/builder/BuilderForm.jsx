@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useFetchCategoriesQuery } from "api/apiSlice";
 import {
@@ -27,7 +27,9 @@ import AddButton from "features/builder/components/AddButton";
 import AddWorkItemModal from "features/builder/AddWorkItemModal";
 
 export const BuilderForm = ({ open }) => {
-  const { workItems, sections, dialogPage } = useSelector((state) => state.builder);
+  const { workItems, sections, dialogPage } = useSelector(
+    (state) => state.builder
+  );
   const dispatch = useDispatch();
   const isSignedIn = useSelector((state) => state.auth?.isSignedIn);
   const isPermFetched = useSelector((state) => state.user?.isPermFetched);
@@ -43,7 +45,7 @@ export const BuilderForm = ({ open }) => {
     error: catError,
   } = useFetchCategoriesQuery(
     { page: null, pageSize: null, titleSearch: null },
-    { skip: !isSignedIn || !isPermFetched}
+    { skip: !isSignedIn || !isPermFetched }
   );
 
   const handleAddSection = (value) => {
@@ -66,7 +68,7 @@ export const BuilderForm = ({ open }) => {
   };
 
   if (isCatError) {
-    console.log(catError)
+    console.log(catError);
     return (
       <Transition visible={open && dialogPage === "form"}>
         <Segment basic>

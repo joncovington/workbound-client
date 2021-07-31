@@ -65,7 +65,7 @@ const builderSlice = createSlice({
       state.workItems = hasRemovedWorkItems;
     },
     setAllowAddWorkItem: (state, action) => {
-      state.allowAddWorkItem = action.payload
+      state.allowAddWorkItem = action.payload;
     },
   },
 });
@@ -84,7 +84,7 @@ export const {
   setWorkItems,
   addWorkItem,
   removeWorkItem,
-  setAllowAddWorkItem
+  setAllowAddWorkItem,
 } = builderSlice.actions;
 
 export default builderSlice.reducer;

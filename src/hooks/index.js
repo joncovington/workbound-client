@@ -1,47 +1,47 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export const useForm = (callback, validate) => {
-    const [inputs, setInputs] = useState({});
-    const [errors, setErrors] = useState({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
+  const [inputs, setInputs] = useState({});
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    useEffect(() => {
+  useEffect(() => {
     if (Object.keys(errors).length === 0 && isSubmitting) {
-        callback();
-        setIsSubmitting(false);
+      callback();
+      setIsSubmitting(false);
     }
-    }, [errors, isSubmitting, callback]);
+  }, [errors, isSubmitting, callback]);
 
-    useEffect(() => {
-        setErrors(validate(inputs))
-    }, [inputs, validate])
+  useEffect(() => {
+    setErrors(validate(inputs));
+  }, [inputs, validate]);
 
-    const handleSubmit = () => {
-        setErrors(validate(inputs))
-        setIsSubmitting(true);
-    };
+  const handleSubmit = () => {
+    setErrors(validate(inputs));
+    setIsSubmitting(true);
+  };
 
-    const handleInputChange = (event) => {
-        const { name, value } = event.target
-        event.persist();
-        setInputs(inputs => ({ ...inputs, [name]: {touched: true, value} }))
-    };
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    event.persist();
+    setInputs((inputs) => ({ ...inputs, [name]: { touched: true, value } }));
+  };
 
-    const handleBlur = (event) => {
-        const { name, value } = event.target
-        event.persist();
-        if (inputs[name] === undefined) {
-            setInputs(inputs => ({ ...inputs, [name]: {touched: true, value} }))
-        }
+  const handleBlur = (event) => {
+    const { name, value } = event.target;
+    event.persist();
+    if (inputs[name] === undefined) {
+      setInputs((inputs) => ({ ...inputs, [name]: { touched: true, value } }));
     }
+  };
 
-    return {
-        setInputs,
-        handleInputChange,
-        handleBlur,
-        handleSubmit,
-        inputs,
-        errors,
-        isSubmitting,
-    }
+  return {
+    setInputs,
+    handleInputChange,
+    handleBlur,
+    handleSubmit,
+    inputs,
+    errors,
+    isSubmitting,
+  };
 };
