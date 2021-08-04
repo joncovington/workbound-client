@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { createMemoryHistory } from "history";
 import { useDispatch, useSelector } from "react-redux";
-import { Message, Transition } from "semantic-ui-react";
+import {
+  Message,
+  Transition,
+  Grid,
+  Header as UiHeader,
+} from "semantic-ui-react";
 import { loginOnLoad } from "features/auth/authSlice";
 import Header from "components/Header";
 import SignInForm from "features/auth/SignInForm";
@@ -55,18 +60,39 @@ function App() {
   }, [dispatch, userId]);
 
   useEffect(() => {
-    currentPath === "/build" && isPermFetched ? setBuilderOpen(true) : setBuilderOpen(false);
+    currentPath === "/build" && isPermFetched
+      ? setBuilderOpen(true)
+      : setBuilderOpen(false);
 
     currentPath === "/profile" ? setProfileOpen(true) : setProfileOpen(false);
   }, [currentPath, isPermFetched]);
 
   const [signInModalOpen, setSignInModalOpen] = useState(false);
+  const [signUpModalOpen, setSignUpModalOpen] = useState(false);
   const [builderOpen, setBuilderOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
   return (
     <>
       <Header signInOpen={setSignInModalOpen} />
+      {isSignedIn ? null : (
+        <Grid>
+          <Grid.Row style={{ padding: ".5em 1.2em" }}>
+            <Grid.Column textAlign="right">
+              <UiHeader as="h5">
+                Don't have an account? Sign up{" "}
+                <span
+                  onClick={() => console.log("sign up")}
+                  style={{ color: "#1b7ec8", cursor: "pointer" }}
+                >
+                  HERE
+                </span>
+                .
+              </UiHeader>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      )}
       <Transition visible={showErrorMsg} animation="fade up" duration={500}>
         <Message
           negative
@@ -79,15 +105,13 @@ function App() {
         </Message>
       </Transition>
       <SignInForm open={signInModalOpen} setOpen={setSignInModalOpen} />
-      
-      {
-        isPermFetched
-        ? <>
-            <Profile open={profileOpen} setOpen={setProfileOpen} />
-            <Builder open={builderOpen} setOpen={setBuilderOpen} />
-          </>
-        : null
-      }
+
+      {isPermFetched ? (
+        <>
+          <Profile open={profileOpen} setOpen={setProfileOpen} />
+          <Builder open={builderOpen} setOpen={setBuilderOpen} />
+        </>
+      ) : null}
 
       <Switch>
         <Route

@@ -1,18 +1,19 @@
 import firebase from "firebase/app";
 import "firebase/auth";
-
+import workboundApi from "api/workboundApi";
 import { signInFirebase } from "features/auth/authSlice";
 import { fetchProfile } from "features/user/userSlice";
 import apiConnection from "api/workboundApi";
 import store from "app/store";
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyAEpG1FBewc_-D2c4CTPXJ-4saz3F5Vd8Q",
-  authDomain: "workbound-api.firebaseapp.com",
-  projectId: "workbound-api",
-  storageBucket: "workbound-api.appspot.com",
-  messagingSenderId: "962624929816",
-  appId: "1:962624929816:web:68f0d0c1f9bd8796d5436d",
+  apiKey: "AIzaSyCryMvcTRv21VJ8dFF1v8-54n72PmCluhE",
+    authDomain: "workbound-api-a432e.firebaseapp.com",
+    projectId: "workbound-api-a432e",
+    storageBucket: "workbound-api-a432e.appspot.com",
+    messagingSenderId: "19561201313",
+    appId: "1:19561201313:web:3e992c8558c267ec30fae0",
+    measurementId: "G-953N55YDWC"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -26,6 +27,10 @@ export const onAuthStateChanged = () => {
         .then((res) => {
           apiConnection.defaults.headers.common["Authorization"] = res;
           localStorage.setItem("refresh_token", auth.currentUser.refreshToken);
+          workboundApi
+            .post('user/sync/', {token: res})
+              .then(res => console.log('Sync response: ', res.status))
+              .catch(error => console.log('Sync error: ', error))
           store.dispatch(signInFirebase({ signIn: true, error: null }));
           store.dispatch(fetchProfile());
         })

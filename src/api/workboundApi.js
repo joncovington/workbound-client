@@ -21,7 +21,6 @@ apiConnection.interceptors.response.use(
   },
   async function (error) {
     const originalRequest = error.config;
-    console.log(error.status, error.response);
 
     if (typeof error.response === "undefined") {
       alert(

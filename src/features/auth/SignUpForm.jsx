@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { clearErrors } from "features/auth/authSlice";
-import {
-  signInWithEmailAndPassword,
-  signInWithGoogle,
-} from "firebase-utils/firebase";
+// import {
+//   signInWithEmailAndPassword,
+//   signInWithGoogle,
+// } from "firebase-utils/firebase";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
@@ -20,18 +20,20 @@ import {
   Label,
 } from "semantic-ui-react";
 
-import "./SignInForm.styles.css";
-
-function SignInForm(props) {
+function SignUpForm(props) {
   const { setOpen } = props;
-  const { isSignedIn, error: authError } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [showError, setShowError] = useState(false);
-  const [signInError, setSignInError] = useState("");
 
-  const signInSchema = Yup.object().shape({
+  const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+  const mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
+
+  const signUpSchema = Yup.object({
     email: Yup.string().email("Invalid Email").required("Valid Email Required"),
-    password: Yup.string().required("Password Required"),
+    password: Yup.string().required("Password Required").min(8, 'Password must be a minimum of 8 characters').matches(mediumRegex.source, 'Please choose a stronger password.'),
+    confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match'),
+    firstName: Yup.string().required('First Name Required'),
+    lastName: Yup.string().required('Last Name Required')
   });
 
   const formik = useFormik({
@@ -40,13 +42,13 @@ function SignInForm(props) {
       password: "",
     },
     onSubmit: (values) => {
-      signInWithEmailAndPassword(values);
+      // signInWithEmailAndPassword(values);
       document.getElementById("emailInput").focus();
       formik.resetForm();
     },
-    validationSchema: signInSchema,
+    validationSchema: signUpSchema,
   });
-
+  
   // configure error attribute for Semantic UI
   const errorConfig = (msg, pointing) => {
     return {
@@ -54,22 +56,6 @@ function SignInForm(props) {
       pointing: pointing,
     };
   };
-
-  useEffect(() => {
-    if (authError.signIn) {
-      setSignInError(authError?.signIn);
-      setShowError(true);
-    } else {
-      setSignInError("");
-      setShowError(false);
-    }
-  }, [authError, signInError, formik]);
-
-  useEffect(() => {
-    if (isSignedIn) {
-      setOpen(false);
-    }
-  }, [isSignedIn, setOpen]);
 
   return (
     <TransitionablePortal
@@ -85,17 +71,6 @@ function SignInForm(props) {
         open={true}
         dimmer="blurring"
       >
-        {" "}
-        {showError ? (
-          <Message attached negative>
-            <Message.Header>
-              There were some errors with your submission
-            </Message.Header>
-            <Message.List>
-              <Message.Item>{signInError}</Message.Item>
-            </Message.List>
-          </Message>
-        ) : null}
         <Grid>
           <Grid.Row columns={2} verticalAlign="middle">
             <Grid.Column mobile={16} tablet={8} widescreen={8} computer={8}>
@@ -104,19 +79,7 @@ function SignInForm(props) {
                   <Grid>
                     <Grid.Row>
                       <Grid.Column>
-                        <Header>Sign In</Header>
-                        {isSignedIn ? null : (
-                          <Grid>
-                            <Grid.Row>
-                              <Grid.Column textAlign="left">
-                                <Header as="h5">
-                                  Don't have an account? &nbsp;
-                                  <Label as="a">Sign up here.</Label>
-                                </Header>
-                              </Grid.Column>
-                            </Grid.Row>
-                          </Grid>
-                        )}
+                        <Header>Sign Up</Header>
                       </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
@@ -177,33 +140,10 @@ function SignInForm(props) {
                       !formik.isValid || formik.isSubmitting ? true : false
                     }
                     loading={formik.isSubmitting ? true : false}
-                    content="Sign In With Email"
+                    content="Sign Up With Email"
                   />
                 </div>
               </Form>
-            </Grid.Column>
-            <Grid.Column mobile={16} tablet={8} widescreen={8} computer={8}>
-              <Grid>
-                <Grid.Row only="mobile">
-                  <Grid.Column textAlign="center">
-                    <Header as="h5">OR</Header>
-                  </Grid.Column>
-                </Grid.Row>
-                <Grid.Row className="googleButtonRow">
-                  <Grid.Column width={16}>
-                    <Segment basic className="googleButtonSegment">
-                      <Button
-                        color="red"
-                        fluid
-                        labelPosition="left"
-                        icon="google"
-                        content="Sign In With Google"
-                        onClick={signInWithGoogle}
-                      />
-                    </Segment>
-                  </Grid.Column>
-                </Grid.Row>
-              </Grid>
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -215,4 +155,4 @@ function SignInForm(props) {
   );
 }
 
-export default SignInForm;
+export default SignUpForm;
