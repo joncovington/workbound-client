@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { push } from "connected-react-router";
 import { clearErrors } from "features/auth/authSlice";
 import {
   signInWithEmailAndPassword,
@@ -23,7 +24,6 @@ import {
 import "./SignInForm.styles.css";
 
 function SignInForm(props) {
-  const { setOpen } = props;
   const { isSignedIn, error: authError } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [showError, setShowError] = useState(false);
@@ -67,9 +67,9 @@ function SignInForm(props) {
 
   useEffect(() => {
     if (isSignedIn) {
-      setOpen(false);
+      dispatch(push('/'))
     }
-  }, [isSignedIn, setOpen]);
+  }, [dispatch, isSignedIn]);
 
   return (
     <TransitionablePortal
@@ -78,7 +78,7 @@ function SignInForm(props) {
     >
       <Modal
         onClose={() => {
-          setOpen(false);
+          dispatch(push('/'))
           formik.resetForm();
           dispatch(clearErrors());
         }}

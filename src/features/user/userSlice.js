@@ -110,8 +110,12 @@ export const userSlice = createSlice({
     [updateProfile.fulfilled]: (state, action) => {
       state.status = "succeeded";
       state.profile = action.payload.profile;
-      if (media_root + action.payload.profile.image !== state.profile.image) {
+      if (action.payload.profile.image) {
         state.profile.image = media_root + action.payload.profile.image;
+        state.profile.thumbnail = media_root + action.payload.profile.thumbnail;
+      } else {
+        state.profile.image = null;
+        state.profile.thumbnail = null;
       }
     },
     [updateProfile.rejected]: (state, action) => {

@@ -1,34 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
-import { createMemoryHistory } from "history";
 import { useDispatch, useSelector } from "react-redux";
+import { push } from "connected-react-router";
 import {
-  Message,
-  Transition,
   Grid,
   Header as UiHeader,
 } from "semantic-ui-react";
 import { loginOnLoad } from "features/auth/authSlice";
 import Header from "components/Header";
 import SignInForm from "features/auth/SignInForm";
+import SignUpForm from "features/auth/SignUpForm";
 import Profile from "features/user/Profile";
 import Tasks from "features/task/Tasks";
 import Categories from "features/category/Categories";
 import Builder from "features/builder/Builder";
+import Messages from 'features/messages/Messages'
 import { onAuthStateChanged } from "../firebase-utils/firebase";
 import { fetchPermissions } from "features/user/userSlice";
+import { addMessage } from "features/messages/messagesSlice";
 
-export const history = createMemoryHistory();
+// export const history = createMemoryHistory();
 
 function App() {
   const dispatch = useDispatch();
-  const { isSignedIn, error, status } = useSelector((state) => state.auth);
+  const { isSignedIn, error } = useSelector((state) => state.auth);
+  const messages = useSelector((state) => state.messages);
   const isPermFetched = useSelector((state) => state.user.isPermFetched);
   const userId = useSelector((state) => state.user.id);
   const token = localStorage.getItem("refresh_token");
-  const [errorMsg, setErrorMsg] = useState("");
-  const [showErrorMsg, setShowErrorMessage] = useState(false);
   const currentPath = useSelector((state) => state.router.location.pathname);
+
+  const [builderOpen, setBuilderOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged();
@@ -45,13 +48,9 @@ function App() {
 
   useEffect(() => {
     if (!isSignedIn && error?.signOut) {
-      setErrorMsg(error.signOut);
-      setShowErrorMessage(true);
-    } else if (isSignedIn) {
-      setErrorMsg("");
-      setShowErrorMessage(false);
+      dispatch(addMessage({'message': error.signOut, 'messageType': 'negative'}));
     }
-  }, [isSignedIn, error, status]);
+  }, [dispatch, isSignedIn, error]);
 
   useEffect(() => {
     if (userId) {
@@ -59,30 +58,32 @@ function App() {
     }
   }, [dispatch, userId]);
 
+
+  useEffect(() => {
+    currentPath === "/profile" ? setProfileOpen(true) : setProfileOpen(false);
+  }, [currentPath]);
+
   useEffect(() => {
     currentPath === "/build" && isPermFetched
       ? setBuilderOpen(true)
       : setBuilderOpen(false);
 
     currentPath === "/profile" ? setProfileOpen(true) : setProfileOpen(false);
-  }, [currentPath, isPermFetched]);
+  }, [currentPath, isPermFetched, isSignedIn]);
 
-  const [signInModalOpen, setSignInModalOpen] = useState(false);
-  const [signUpModalOpen, setSignUpModalOpen] = useState(false);
-  const [builderOpen, setBuilderOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
 
   return (
     <>
-      <Header signInOpen={setSignInModalOpen} />
-      {isSignedIn ? null : (
+      <Header />
+      {!isSignedIn && messages.length === 0 
+        ? (
         <Grid>
           <Grid.Row style={{ padding: ".5em 1.2em" }}>
             <Grid.Column textAlign="right">
               <UiHeader as="h5">
                 Don't have an account? Sign up{" "}
                 <span
-                  onClick={() => console.log("sign up")}
+                  onClick={() => dispatch(push("/signUp"))}
                   style={{ color: "#1b7ec8", cursor: "pointer" }}
                 >
                   HERE
@@ -92,19 +93,11 @@ function App() {
             </Grid.Column>
           </Grid.Row>
         </Grid>
-      )}
-      <Transition visible={showErrorMsg} animation="fade up" duration={500}>
-        <Message
-          negative
-          onDismiss={() => {
-            setShowErrorMessage(false);
-          }}
-        >
-          <Message.Header></Message.Header>
-          <Message.Content>{errorMsg}</Message.Content>
-        </Message>
-      </Transition>
-      <SignInForm open={signInModalOpen} setOpen={setSignInModalOpen} />
+        ) : null
+      }
+      
+      <SignInForm open={currentPath === "/signIn" && !isSignedIn} />
+      <SignUpForm open={currentPath === "/signUp" && !isSignedIn} />
 
       {isPermFetched ? (
         <>
@@ -114,15 +107,11 @@ function App() {
       ) : null}
 
       <Switch>
-        <Route
-          path="/signin"
-          render={() => {
-            setSignInModalOpen(true);
-          }}
-        />
+        <Route path="/signIn" />
         <Route path="/tasks" exact component={Tasks} />
         <Route path="/categories" exact component={Categories} />
       </Switch>
+      <Messages />
     </>
   );
 }

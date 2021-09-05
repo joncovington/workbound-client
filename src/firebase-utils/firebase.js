@@ -29,10 +29,13 @@ export const onAuthStateChanged = () => {
           localStorage.setItem("refresh_token", auth.currentUser.refreshToken);
           workboundApi
             .post('user/sync/', {token: res})
-              .then(res => console.log('Sync response: ', res.status))
+              .then(res => {
+                console.log('Sync response: ', res.status)
+                store.dispatch(signInFirebase({ signIn: true, error: null }));
+                store.dispatch(fetchProfile());
+              })
               .catch(error => console.log('Sync error: ', error))
-          store.dispatch(signInFirebase({ signIn: true, error: null }));
-          store.dispatch(fetchProfile());
+          
         })
         .catch((error) => {
           console.log("Fetch Token Error", error);

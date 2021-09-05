@@ -1,13 +1,15 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Button, Menu } from "semantic-ui-react";
+import { push } from "connected-react-router";
 
 import UserMenu from "../features/user/UserMenu";
 
 import "./Header.styles.css";
 
 function Header(props) {
+  const dispatch = useDispatch()
   const isSignedIn = useSelector((state) => state.auth?.isSignedIn);
 
   return (
@@ -17,10 +19,10 @@ function Header(props) {
       </Menu.Item>
       <Menu.Menu position="right">
         {isSignedIn ? (
-          <UserMenu signInOpen={props.signInOpen} />
+          <UserMenu />
         ) : (
           <Menu.Item header>
-            <Button onClick={() => props.signInOpen(true)} color="blue">
+            <Button onClick={() => dispatch(push('/signIn'))} color="blue">
               Sign In
             </Button>
           </Menu.Item>

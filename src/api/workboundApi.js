@@ -32,6 +32,10 @@ apiConnection.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    if (error.response.status === 403 || 500) {
+      console.log(error.config)
+    }
+
     if (error.response.status === 401) {
       const refresh = localStorage.getItem("refresh_token");
       axios

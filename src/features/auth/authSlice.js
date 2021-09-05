@@ -25,6 +25,10 @@ const refreshToken = (refresh_token) => {
     });
 };
 
+export const signUpWithEmailAndPassword = (formData) => {
+    return workboundApi.post("user/create/", formData);
+};
+
 export const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -58,7 +62,7 @@ export const authSlice = createSlice({
           "You have been signed out. Please sign in again.";
       }
     },
-  },
+  }
 });
 
 export const { clearErrors, signOut, loginOnLoad, signInFirebase } =
