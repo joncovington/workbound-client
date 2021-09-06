@@ -9,8 +9,10 @@ import {
   Icon,
 } from "semantic-ui-react";
 
-export const BuilderHeader = ({ open, closeFn, resetFn }) => {
+export const BuilderHeader = ({ closeFn, resetFn }) => {
   const openMenu = useSelector((state) => state.builder.openMenu);
+  const currentPath = useSelector((state) => state.router.location.pathname);
+  const open = currentPath === '/build'
   return (
     <Transition
       visible={open}

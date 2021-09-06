@@ -114,6 +114,7 @@ const CategoryList = (props) => {
   };
 
   const renderAddButton = () => {
+    console.log(categoryPermissions?.add_category?.status)
     return categoryPermissions?.add_category?.status ? (
       <Label
         corner="right"
@@ -249,19 +250,6 @@ const CategoryList = (props) => {
             <Grid.Row>
               <Grid.Column width={8}>There are 0 categories.</Grid.Column>
               <Grid.Column textAlign="right" width={8}>
-                <Label
-                  content="Add Category"
-                  icon="plus"
-                  as="a"
-                  color="green"
-                  onClick={() =>
-                    dispatch({
-                      type: "OPEN_ADD_MODAL",
-                      objType: "Category",
-                      onSubmit: handleAdd,
-                    })
-                  }
-                />
               </Grid.Column>
             </Grid.Row>
           </Grid>

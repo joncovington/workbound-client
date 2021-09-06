@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
@@ -30,9 +30,6 @@ function App() {
   const token = localStorage.getItem("refresh_token");
   const currentPath = useSelector((state) => state.router.location.pathname);
 
-  const [builderOpen, setBuilderOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged();
     return () => {
@@ -48,7 +45,7 @@ function App() {
 
   useEffect(() => {
     if (!isSignedIn && error?.signOut) {
-      dispatch(addMessage({'message': error.signOut, 'messageType': 'negative'}));
+      dispatch(addMessage(error.signOut, 'negative', ''));
     }
   }, [dispatch, isSignedIn, error]);
 
@@ -57,20 +54,6 @@ function App() {
       dispatch(fetchPermissions());
     }
   }, [dispatch, userId]);
-
-
-  useEffect(() => {
-    currentPath === "/profile" ? setProfileOpen(true) : setProfileOpen(false);
-  }, [currentPath]);
-
-  useEffect(() => {
-    currentPath === "/build" && isPermFetched
-      ? setBuilderOpen(true)
-      : setBuilderOpen(false);
-
-    currentPath === "/profile" ? setProfileOpen(true) : setProfileOpen(false);
-  }, [currentPath, isPermFetched, isSignedIn]);
-
 
   return (
     <>
@@ -101,13 +84,12 @@ function App() {
 
       {isPermFetched ? (
         <>
-          <Profile open={profileOpen} setOpen={setProfileOpen} />
-          <Builder open={builderOpen} setOpen={setBuilderOpen} />
+          <Profile open={ currentPath === "/profile" && isPermFetched } />
+          <Builder open={ currentPath === "/build" && isPermFetched } />
         </>
       ) : null}
 
       <Switch>
-        <Route path="/signIn" />
         <Route path="/tasks" exact component={Tasks} />
         <Route path="/categories" exact component={Categories} />
       </Switch>

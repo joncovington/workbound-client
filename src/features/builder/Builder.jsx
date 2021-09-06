@@ -13,10 +13,11 @@ import BuilderForm from "features/builder/BuilderForm";
 import BuilderBreadcrumbs from "features/builder/BuilderBreadcrumbs";
 
 const Builder = (props) => {
-  const { open } = props;
+  
   const dispatch = useDispatch();
+  
+  const builderState = useSelector((state) => state.builder);
   const currentPath = useSelector((state) => state.router.location.pathname);
-  const state = useSelector((state) => state.builder);
 
   useEffect(() => {
     if (currentPath !== "/build") {
@@ -25,8 +26,8 @@ const Builder = (props) => {
   }, [currentPath, dispatch]);
 
   useEffect(() => {
-    console.log("Builder State: ", state);
-  }, [state]);
+    console.log("Builder State: ", builderState);
+  }, [builderState]);
 
   function closeFn() {
     dispatch(push("/"));
@@ -39,24 +40,22 @@ const Builder = (props) => {
   return (
     <div>
       <BuilderHeader
-        state={state}
-        open={open}
         closeFn={closeFn}
         resetFn={resetFn}
       />
       <Grid>
         <Grid.Column only="mobile">
-          <BuilderBreadcrumbs open={open} state={state} dispatch={dispatch} />
+          <BuilderBreadcrumbs />
         </Grid.Column>
       </Grid>
       <Grid centered>
         <Grid.Column width={4} only="tablet computer">
-          <BuilderSteps state={state} open={open} />
+          <BuilderSteps />
         </Grid.Column>
         <Grid.Column widescreen={12} tablet={12} computer={12} mobile={16}>
-          <BuilderMenu open={open} state={state} dispatch={dispatch} />
-          <BuilderInfoForm open={open} />
-          <BuilderForm open={open} />
+          <BuilderMenu state={builderState} dispatch={dispatch} />
+          <BuilderInfoForm />
+          <BuilderForm />
         </Grid.Column>
       </Grid>
     </div>

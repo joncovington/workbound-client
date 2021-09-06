@@ -1,8 +1,11 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Transition, Grid, Breadcrumb } from "semantic-ui-react";
 
-export const BuilderBreadcrumbs = ({ open, state }) => {
-  const { dialogPage, buildType } = state;
+export const BuilderBreadcrumbs = () => {
+  const { dialogPage, buildType } = useSelector((state) => state.builder);
+  const currentPath = useSelector((state) => state.router.location.pathname);
+  const open = currentPath === '/build'
 
   const sections = [
     {

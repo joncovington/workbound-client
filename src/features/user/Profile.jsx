@@ -5,9 +5,10 @@ import ProfilePane from "features/user/ProfilePane";
 import PermissionList from "features/user/PermissionList";
 
 function Profile(props) {
-  const { open } = props;
   const user = useSelector((state) => state.user);
   const [successVisible, setSuccessVisible] = useState(false);
+  const currentPath = useSelector((state) => state.router.location.pathname);
+  const isPermFetched = useSelector((state) => state.user.isPermFetched);
 
   const panes = [
     {
@@ -31,7 +32,7 @@ function Profile(props) {
   return (
     <div>
       <Transition
-        visible={open}
+        visible={currentPath === "/profile" && isPermFetched}
         animation="fade down"
         duration={{ hide: 0, show: 500 }}
       >
@@ -51,8 +52,8 @@ function Profile(props) {
         />
       ) : null}
       <Transition
-        visible={open}
-        animation="slide left"
+        visible={currentPath === "/profile" && isPermFetched}
+        animation="fade down"
         duration={{ hide: 0, show: 500 }}
       >
         <Tab menu={{ pointing: true }} panes={panes} />

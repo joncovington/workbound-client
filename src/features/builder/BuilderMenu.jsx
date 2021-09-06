@@ -1,4 +1,5 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Segment,
   Header,
@@ -9,10 +10,15 @@ import {
 } from "semantic-ui-react";
 import { setBuildType, openInfoForm } from "features/builder/builderSlice";
 
-export const BuilderMenu = ({ open, state, dispatch }) => {
+export const BuilderMenu = () => {
+  const dispatch = useDispatch()
+  const { dialogPage } = useSelector((state) => state.builder);
+  const currentPath = useSelector((state) => state.router.location.pathname);
+  const open = currentPath === '/build'
+
   return (
     <Transition
-      visible={open && state.dialogPage === "menu"}
+      visible={open && dialogPage === "menu"}
       animation="slide right"
       duration={{ hide: 0, show: 500 }}
     >

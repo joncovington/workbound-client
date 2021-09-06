@@ -18,12 +18,14 @@ import {
   openTemplate,
 } from "features/builder/builderSlice";
 
-export const BuilderInfoForm = ({ open }) => {
+export const BuilderInfoForm = () => {
   const dispatch = useDispatch();
   const state = useSelector((state) => state.builder);
   const { dialogPage } = state;
   const [showExtraFields, setShowExtraFields] = useState("");
   const [resetConfirm, setResetConfirm] = useState(false);
+  const currentPath = useSelector((state) => state.router.location.pathname);
+  const open = currentPath === '/build'
 
   const handleRadioChange = (e, { value }) => setShowExtraFields(value);
 
