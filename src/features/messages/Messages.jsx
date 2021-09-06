@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Message, Transition, List } from 'semantic-ui-react';
 
 import { removeMessage } from './messagesSlice';
-
+import './Messages.styles.css'
 
 const Messages = (props) => {
   const messages = useSelector(state => state.messages)

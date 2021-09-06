@@ -1,19 +1,21 @@
-import { createSlice, createAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 
 const messagesSlice = createSlice({
   name: "messages",
-  initialState: [{'message': 'test', 'header': 'testing header', 'type': 'positive'}],
+  initialState: [],
   reducers: {
     addMessage: {
       reducer: (state, action) => {
         state.push(action.payload);
       },
-      prepare: (message, header, type) => {
-        return {
-          'message': message,
-          'header': header,
-          'type': type
+      prepare: (message, type, header = null ) => {
+          return {
+            payload: {
+              message,
+              header,
+              type
+            },
         }
       }
 

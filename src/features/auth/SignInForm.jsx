@@ -19,6 +19,8 @@ import {
   Divider,
   Header,
   Label,
+  Dimmer,
+  Loader
 } from "semantic-ui-react";
 
 import "./SignInForm.styles.css";
@@ -28,6 +30,7 @@ function SignInForm(props) {
   const dispatch = useDispatch();
   const [showError, setShowError] = useState(false);
   const [signInError, setSignInError] = useState("");
+  const [modalDim, setModalDim] = useState(false);
 
   const signInSchema = Yup.object().shape({
     email: Yup.string().email("Invalid Email").required("Valid Email Required"),
@@ -41,8 +44,7 @@ function SignInForm(props) {
     },
     onSubmit: (values) => {
       signInWithEmailAndPassword(values);
-      document.getElementById("emailInput").focus();
-      formik.resetForm();
+      
     },
     validationSchema: signInSchema,
   });
@@ -79,12 +81,15 @@ function SignInForm(props) {
       <Modal
         onClose={() => {
           dispatch(push('/'))
+          document.getElementById("emailInput").focus();
           formik.resetForm();
           dispatch(clearErrors());
+          setModalDim(false)
         }}
         open={true}
         dimmer="blurring"
       >
+        
         {" "}
         {showError ? (
           <Message attached negative>
@@ -96,7 +101,11 @@ function SignInForm(props) {
             </Message.List>
           </Message>
         ) : null}
-        <Grid>
+        <Dimmer.Dimmable as={Grid}>
+          <Dimmer inverted active={modalDim}>
+            <Loader inverted />
+          </Dimmer>
+        
           <Grid.Row columns={2} verticalAlign="middle">
             <Grid.Column mobile={16} tablet={8} widescreen={8} computer={8}>
               <Form className="attached fluid">
@@ -172,7 +181,10 @@ function SignInForm(props) {
                     icon="mail"
                     primary
                     type="submit"
-                    onClick={formik.handleSubmit}
+                    onClick={() => {
+                      setModalDim(true)
+                      formik.handleSubmit()
+                    }}
                     disabled={
                       !formik.isValid || formik.isSubmitting ? true : false
                     }
@@ -206,7 +218,7 @@ function SignInForm(props) {
               </Grid>
             </Grid.Column>
           </Grid.Row>
-        </Grid>
+        </Dimmer.Dimmable>
         <Divider className="signInDivider" vertical>
           OR
         </Divider>

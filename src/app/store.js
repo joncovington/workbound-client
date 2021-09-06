@@ -10,7 +10,7 @@ import { connectRouter, routerMiddleware } from "connected-react-router";
 
 export const history = createMemoryHistory();
 
-export default configureStore({
+export const store = configureStore({
   reducer: {
     auth: authSliceReducer,
     user: userSliceReducer,
@@ -25,3 +25,5 @@ export default configureStore({
       .concat(routerMiddleware(history));
   },
 });
+
+export default store

@@ -116,9 +116,10 @@ function SignUpForm(props) {
           formik.resetForm()
         }}
       >
-        <Dimmer active={modalDim}/>
-        <Loader active/>
-        <Grid>
+        <Dimmer.Dimmable as={Grid}>
+          <Dimmer inverted active={modalDim}>
+            <Loader inverted />
+          </Dimmer>
         <Label floating circular content='x'color='red' style={{'cursor': 'pointer'}} onClick={closeModal}/>
           <Grid.Row columns={2} verticalAlign="middle">
             <Grid.Column mobile={16} tablet={8} widescreen={8} computer={8}>
@@ -274,7 +275,7 @@ function SignUpForm(props) {
               </Grid>
             </Grid.Column>
           </Grid.Row>
-        </Grid>
+        </Dimmer.Dimmable>
         <Divider className="signInDivider" vertical>
           OR
         </Divider>

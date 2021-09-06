@@ -242,35 +242,21 @@ const TaskList = (props) => {
 
     return results.length > 0 ? (
       <>
-        {" "}
-        {renderAddTask()}
         <Segment basic>
           <Accordion fluid styled panels={panels} />
+          {renderForm()}
         </Segment>
-        {renderForm()}
+        {renderAddTask()}
       </>
     ) : (
       <>
+        {renderAddTask()}
         <Message warning>
           <Grid>
             <Grid.Row>
               <Grid.Column width={8}>There are 0 tasks.</Grid.Column>
               <Grid.Column textAlign="right" width={8}>
-                {taskPermissions?.add_task?.status ? (
-                  <Label
-                    content="Add Task"
-                    icon="plus"
-                    as="a"
-                    color="green"
-                    onClick={() =>
-                      dispatch({
-                        type: "OPEN_ADD_MODAL",
-                        objType: "Task",
-                        onSubmit: handleAddTask,
-                      })
-                    }
-                  />
-                ) : null}
+                
               </Grid.Column>
             </Grid.Row>
           </Grid>

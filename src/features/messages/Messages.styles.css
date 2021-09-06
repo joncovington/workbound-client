@@ -1,0 +1,7 @@
+.ui.message>.close.icon {
+  top: 1em;
+}
+
+.ui.message {
+  padding: .75em 1em;
+}

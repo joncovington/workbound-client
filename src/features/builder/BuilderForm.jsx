@@ -26,10 +26,13 @@ import BuilderList from "features/builder/components/BuilderList.component";
 import AddButton from "features/builder/components/AddButton";
 import AddWorkItemModal from "features/builder/AddWorkItemModal";
 
-export const BuilderForm = ({ open }) => {
+export const BuilderForm = () => {
   const { workItems, sections, dialogPage } = useSelector(
     (state) => state.builder
   );
+  const currentPath = useSelector((state) => state.router.location.pathname);
+  const open = currentPath === '/build'
+
   const dispatch = useDispatch();
   const isSignedIn = useSelector((state) => state.auth?.isSignedIn);
   const isPermFetched = useSelector((state) => state.user?.isPermFetched);
