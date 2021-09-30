@@ -43,7 +43,6 @@ const ProfileDetail = (props) => {
       bodyFormData.append("phone", inputs.phone.value);
     }
     dispatch(updateProfile(bodyFormData));
-    props.setSuccessVisible(true);
   }
 
   const errorConfig = (msg, pointing) => {

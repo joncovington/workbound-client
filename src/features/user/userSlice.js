@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import workboundApi from "../../api/workboundApi";
+import { addMessage } from "features/messages/messagesSlice";
 
 const media_root = "http://localhost:8000";
 
@@ -20,7 +21,7 @@ export const fetchProfile = createAsyncThunk(
 
 export const updateProfile = createAsyncThunk(
   "user/updateProfile",
-  async (bodyFormData, { rejectWithValue }) => {
+  async (bodyFormData, { rejectWithValue, dispatch }) => {
     try {
       const response = await workboundApi.patch(
         "user/me/update/",
@@ -30,12 +31,14 @@ export const updateProfile = createAsyncThunk(
             "Content-Type": "multipart/form-data",
           },
         }
-      );
+      )
+      dispatch(addMessage('Profile Updated', 'positive', 'Success'))
       return response.data;
     } catch (err) {
       if (!err.response) {
         throw err;
       }
+      dispatch(addMessage('Something went wrong', 'negative', 'Failure'))
       return rejectWithValue(err.response.data);
     }
   }

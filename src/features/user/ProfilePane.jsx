@@ -15,7 +15,6 @@ import ProfileDetail from "features/user/ProfileDetail";
 const ProfilePane = (props) => {
   const user = props.user;
   const [open, setOpen] = useState(false);
-  const setSuccessVisible = props.setSuccessVisible;
 
   return (
     <Fragment>
@@ -40,7 +39,6 @@ const ProfilePane = (props) => {
             <Button
               onClick={() => {
                 setOpen(true);
-                setSuccessVisible(false);
               }}
               size="tiny"
             >
@@ -48,7 +46,7 @@ const ProfilePane = (props) => {
             </Button>
           </Grid.Column>
           <Grid.Column width={10}>
-            <ProfileDetail setSuccessVisible={setSuccessVisible} user={user} />
+            <ProfileDetail user={user} />
           </Grid.Column>
         </Grid.Row>
       </Grid>
@@ -69,7 +67,6 @@ const ProfilePane = (props) => {
             <EditProfileForm
               user={user}
               setOpen={setOpen}
-              setSuccessVisible={setSuccessVisible}
             />
           </Modal.Content>
         </Modal>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { addMessage } from "features/messages/messagesSlice";
 import {
   Segment,
   Label,
@@ -9,11 +10,11 @@ import {
   Grid,
   Input,
   Pagination,
-  Message,
 } from "semantic-ui-react";
 import CategoryList from "features/category/CategoryList";
 
 const Categories = () => {
+  const dispatch = useDispatch();
   const isSignedIn = useSelector((state) => state.auth.isSignedIn);
   const permissionsFetched = useSelector((state) => state.user.isPermFetched);
   const user = useSelector((state) => state.user);
@@ -26,9 +27,7 @@ const Categories = () => {
   const [searchString, setSearchString] = useState("");
   const [titleSearch, setTitleSearch] = useState("");
   const [categoryCount, setCategoryCount] = useState(0);
-  const [displayError, setDisplayError] = useState(false);
   const [displayList, setDisplayList] = useState(false);
-  const [error, setError] = useState({ header: "", content: "" });
 
   const handlePageSizeChange = (e, { value }) => {
     setPage(1);
@@ -54,16 +53,11 @@ const Categories = () => {
   useEffect(() => {
     if (isSignedIn && permissionsFetched && viewCategoryPemission) {
       setDisplayList(true);
-      setDisplayError(false);
     }
     if (isSignedIn && permissionsFetched && !viewCategoryPemission) {
-      setDisplayError(true);
-      setError({
-        header: "No Permissions To View Categories",
-        content: "Please contact administrator to upgrade your permissions.",
-      });
+      dispatch(addMessage("Please contact administrator to upgrade your permissions.", 'negative', 'No Permissions To View Tasks'))
     }
-  }, [isSignedIn, viewCategoryPemission, permissionsFetched]);
+  }, [isSignedIn, viewCategoryPemission, permissionsFetched, dispatch]);
 
   return (
     <Segment>
@@ -127,16 +121,6 @@ const Categories = () => {
           </Grid.Column>
           <Grid.Column width={4}></Grid.Column>
         </Grid.Row>
-        {displayError ? (
-          <Grid.Row>
-            <Grid.Column>
-              <Message negative>
-                <Message.Header>{error.header}</Message.Header>
-                <Message.Content>{error.content}</Message.Content>
-              </Message>
-            </Grid.Column>
-          </Grid.Row>
-        ) : null}
       </Grid>
       {displayList ? (
         <CategoryList

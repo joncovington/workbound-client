@@ -78,7 +78,7 @@ function App() {
         </Grid>
         ) : null
       }
-      
+      <Messages />
       <SignInForm open={currentPath === "/signIn" && !isSignedIn} />
       <SignUpForm open={currentPath === "/signUp" && !isSignedIn} />
 
@@ -93,7 +93,7 @@ function App() {
         <Route path="/tasks" exact component={Tasks} />
         <Route path="/categories" exact component={Categories} />
       </Switch>
-      <Messages />
+      
     </>
   );
 }
