@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { addMessage } from "features/messages/messagesSlice";
 import {
   Segment,
   Label,
@@ -14,6 +15,7 @@ import {
 import TaskList from "features/task/TaskList";
 
 const Tasks = () => {
+  const dispatch = useDispatch();
   const isSignedIn = useSelector((state) => state.auth.isSignedIn);
   const permissionsFetched = useSelector((state) => state.user.isPermFetched);
   const user = useSelector((state) => state.user);
@@ -25,9 +27,7 @@ const Tasks = () => {
   const [searchString, setSearchString] = useState("");
   const [titleSearch, setTitleSearch] = useState("");
   const [taskCount, setTaskCount] = useState(0);
-  const [displayError, setDisplayError] = useState(false);
   const [displayList, setDisplayList] = useState(false);
-  const [error, setError] = useState({ header: "", content: "" });
 
   const handlePageSizeChange = (e, { value }) => {
     setPage(1);
@@ -53,14 +53,9 @@ const Tasks = () => {
   useEffect(() => {
     if (isSignedIn && permissionsFetched && viewTaskPermission) {
       setDisplayList(true);
-      setDisplayError(false);
     }
     if (isSignedIn && permissionsFetched && !viewTaskPermission) {
-      setDisplayError(true);
-      setError({
-        header: "No Permissions To View Tasks",
-        content: "Please contact administrator to upgrade your permissions.",
-      });
+      dispatch(addMessage("Please contact administrator to upgrade your permissions.", 'negative', 'No Permissions To View Tasks'))
     }
   }, [isSignedIn, viewTaskPermission, permissionsFetched]);
 
@@ -124,16 +119,6 @@ const Tasks = () => {
           </Grid.Column>
           <Grid.Column width={4}></Grid.Column>
         </Grid.Row>
-        {displayError ? (
-          <Grid.Row>
-            <Grid.Column>
-              <Message negative>
-                <Message.Header>{error.header}</Message.Header>
-                <Message.Content>{error.content}</Message.Content>
-              </Message>
-            </Grid.Column>
-          </Grid.Row>
-        ) : null}
       </Grid>
       {displayList ? (
         <TaskList

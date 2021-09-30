@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { Tab, Segment, Header, Message, Transition } from "semantic-ui-react";
+import { Tab, Segment, Header, Transition } from "semantic-ui-react";
 import ProfilePane from "features/user/ProfilePane";
 import PermissionList from "features/user/PermissionList";
 
 function Profile(props) {
   const user = useSelector((state) => state.user);
-  const [successVisible, setSuccessVisible] = useState(false);
   const currentPath = useSelector((state) => state.router.location.pathname);
   const isPermFetched = useSelector((state) => state.user.isPermFetched);
 
@@ -15,7 +14,7 @@ function Profile(props) {
       menuItem: "Details",
       render: () => (
         <Tab.Pane as="div">
-          <ProfilePane setSuccessVisible={setSuccessVisible} user={user} />
+          <ProfilePane user={user} />
         </Tab.Pane>
       ),
     },
@@ -42,15 +41,6 @@ function Profile(props) {
           </Header>
         </Segment>
       </Transition>
-      {successVisible ? (
-        <Message
-          attached
-          positive
-          onDismiss={() => setSuccessVisible(false)}
-          header="Success"
-          content="Profile updated."
-        />
-      ) : null}
       <Transition
         visible={currentPath === "/profile" && isPermFetched}
         animation="fade down"

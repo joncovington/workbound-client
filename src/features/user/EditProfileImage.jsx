@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { Grid, Image, Button, Form, Placeholder } from "semantic-ui-react";
 import { updateProfile } from "features/user/userSlice";
+// import { addMessage } from "features/messages/messagesSlice";
 
 const EditProfileForm = (props) => {
   const dispatch = useDispatch();
@@ -23,7 +24,6 @@ const EditProfileForm = (props) => {
       var bodyFormData = new FormData();
       bodyFormData.append("image", fileInputRef.current.files[0]);
       dispatch(updateProfile(bodyFormData));
-      props.setSuccessVisible(true);
       setOpen(false);
     }
   };

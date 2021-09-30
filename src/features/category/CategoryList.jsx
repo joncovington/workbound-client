@@ -114,7 +114,6 @@ const CategoryList = (props) => {
   };
 
   const renderAddButton = () => {
-    console.log(categoryPermissions?.add_category?.status)
     return categoryPermissions?.add_category?.status ? (
       <Label
         corner="right"
